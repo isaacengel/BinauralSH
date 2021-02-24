@@ -19,15 +19,18 @@ function [Hnm,fc] = toSH_MagLS(H,N,az,el,fs,w,fc,frac,r)
 %   fs = sampling frequency in Hz
 %   w = quadrature weights (ndirs x 1); if empty, use pseudoinverse
 %   fc = cutoff frequency in Hz above which phase is "disregarded" in
-%   favour of magnitude; if empty (default), use aliasing frequency
+%       favour of magnitude; if empty (default), use aliasing frequency
 %   frac = half-length of the transition band (def=2 -> 1/2 octave). E.g.
-%   if fc=623.89 Hz, smooth between 349.65 and 882.31 Hz. If frac==0, don't
-%   smooth.
+%       if fc=623.89 Hz, smooth between 349.65 and 882.31 Hz. If frac==0, 
+%       don't smooth.
 %   r = head radius in m (def=0.085)
 %   
 % OUTPUT:
 %   Hnm = HRTF's SH coefficients (nfreqs x (N+1)^2 x 2 ears)
 %   fc = see above
+%
+% EXTERNAL DEPENDENCIES:
+%   AKtools (www.ak.tu-berlin.de/aktools)
 %
 % REFERENCES:
 %   [1] Schörkhuber, C., Zaunschirm, M., Höldrich, R., 2018. Binaural

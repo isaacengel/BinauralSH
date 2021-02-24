@@ -19,8 +19,8 @@ function [hnm,fs,varOut] = toSH(h,N,varargin)
 %   7. Crop HRIR and apply fade in/out if indicated
 %
 % SIMPLE USAGE EXAMPLES:
-%   hnm = toSH(h,15,'magLS','az',az,'el',el,'fs',48000);
-%   hnm = toSH(sofa_h,15,'magLS');
+%   hnm = toSH(h,15,'mode','magLS','az',az,'el',el,'fs',48000);
+%   hnm = toSH(sofa_h,15,'mode','magLS');
 %
 % INPUT:
 %   h = HRIRs in SOFA or matrix format (irlen x ndirs x 2 ears)
@@ -71,6 +71,11 @@ function [hnm,fs,varOut] = toSH(h,N,varargin)
 %   hnm = HRIRs' SH coefficients (nfftOut x (N+1)^2 x 2 ears)
 %   varOut = variable output, i.e. spherical head filter for 'trunc', or fc
 %       for 'magLS'/'earMLS'
+%
+% EXTERNAL DEPENDENCIES:
+%   SOFA API for Matlab (github.com/sofacoustics/API_MO)
+%   Auditory Modeling Toolbox (amtoolbox.sourceforge.net)
+%   AKtools (www.ak.tu-berlin.de/aktools)
 %
 % REFERENCES:
 %   [1] Bernschütz, Benjamin, et al. "Binaural reproduction of plane waves

@@ -1,17 +1,21 @@
 function G = getSHF(N,kr,option,Nhigh,doplot)
 % Return spherical head filters (SHF) for order N, following [1].
 % Optionally, adapt the filters to tapering weights, as in [2].
+%
 % NOTE: we get numerical errors for Nhigh>92
 %
-% Input:
+% INPUT:
 %   N = target SH order
 %   kr = kr vector (nfreqs x 1)
 %   option = if > 0, adapt SHF to tapering weights (see getTaperWin)
 %   Nhigh = reference SH order (def = 90). 
 %   doplot = plot SHF (def = 0)
 %
-% Output:
+% OUTPUT:
 %   G = spherical head filters (nfreqs x 1)
+%
+% EXTERNAL DEPENDENCIES:
+%   AKtools (www.ak.tu-berlin.de/aktools)
 %
 % REFERENCES:
 %   [1] Ben-Hur, Zamir, et al. "Spectral equalization in binaural signals
