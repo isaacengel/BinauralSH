@@ -125,6 +125,12 @@ function [hnm,fs,varOut] = toSH(h,N,varargin)
 % AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
 % February 2021
 
+% TODO: implement Tikhonov regularization for irregular grids
+% According to Duraiswami 2004, it goes like this:
+% reg_eps = 1e-6; % epsilon
+% D = (1 + N*(N+1)) * eye((N+1)^2); % Tikhonov regularization matrix
+% Y_inv = Y' * (Y * Y' + reg_eps*D)^(-1); % instead of pseudoinverse
+
 %% Parse inputs
 p = inputParser;
 addParameter(p,'mode','trunc',@ischar) 
@@ -172,12 +178,12 @@ dualBand = p.Results.dualBand;
 tapering = p.Results.tapering;
 Hnm_ref = p.Results.Hnm_ref;
 
-if isempty(fc)
+if isempty(fc) && ~strcmp(mode,'earMLS')
     fc = N*c/(2*pi*r); % if fc not provided, use aliasing frequency
 end
 
 clear p
-varOut = [];
+varOut = struct();
 
 %% Process SOFA input
 if isstruct(h) % if h is a struct, assume it is a SOFA object

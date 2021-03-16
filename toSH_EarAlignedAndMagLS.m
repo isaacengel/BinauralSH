@@ -66,7 +66,7 @@ end
 if ~exist('fc','var') || isempty(fc)
     c = 343; % speed of sound (m/s)
     fa = N*c/(2*pi*r); % aliasing frequency
-    fc = max(2000,fa); % if fc not provided, use max of fa and 2kHz
+    fc = max(3000,fa); % if fc not provided, use max of fa and 2kHz
 end
 if ~exist('frac','var') || isempty(frac)
     frac = 2;
