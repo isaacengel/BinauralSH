@@ -82,7 +82,7 @@ else
     % Standard
     hnm_ref = toSH(h,Nref,'az',az,'el',el,'fs',fs,'mode','trunc');
     % Time-aligned
-    hnm_TA_ref = toSH(h,Nref,'az',az,'el',el,'fs',fs,'mode','ear');
+    hnm_TA_ref = toSH(h,Nref,'az',az,'el',el,'fs',fs,'mode','TA');
     Hnm_TA_ref = ffth(hnm_TA_ref);
     % Save
     fprintf('Saving %s...\n',filename)
@@ -97,7 +97,7 @@ test_conditions{1}.name = 'Trunc';
 test_conditions{1}.preproc = 'trunc';
 % 2. "TA": time-align the HRTF prior to getting the SH coefficients
 test_conditions{2}.name = 'TA';
-test_conditions{2}.preproc = 'ear';
+test_conditions{2}.preproc = 'TA';
 
 %% Define a few direction subsets
 % 1. Nearest neighbours to 110-point Lebedev grid
