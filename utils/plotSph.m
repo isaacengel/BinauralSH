@@ -7,7 +7,7 @@ function plotSph(az,el,X)
 %   el = vector of elevations in rad (0=top, pi/2=front)
 %   X = vector of data, same length as az and el
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
   
 x = az(:)*180/pi ; y = 90-el(:)*180/pi ; z = X(:);

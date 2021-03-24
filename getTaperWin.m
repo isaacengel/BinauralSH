@@ -33,7 +33,7 @@ function [wN,wnm] = getTaperWin(N,option)
 %       "Diffuse-field equalisation of binaural ambisonic rendering."
 %       Applied Sciences 8.10 (2018): 1956.
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
 
 %% Check input

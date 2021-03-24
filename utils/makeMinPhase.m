@@ -12,7 +12,7 @@ function Hmp = makeMinPhase(Hmag)
 % REFERENCES:
 %   TODO
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
 
 Hlogmag = log(Hmag+eps); % to log-magnitude

@@ -9,7 +9,7 @@
 %       for binaural signals." Audio Engineering Society Convention 145.
 %       Audio Engineering Society, 2018.
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
 
 %% Clear variables

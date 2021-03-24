@@ -10,7 +10,7 @@ function x = iffth(y,nfft,dim)
 % EXTERNAL DEPENDENCIES:
 %   AKtools (www.ak.tu-berlin.de/aktools)
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
 
 

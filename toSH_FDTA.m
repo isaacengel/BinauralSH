@@ -1,9 +1,9 @@
-function [Hnm,fc] = toSH_TimeAlign(H,N,az,el,fs,w,fc,r,earAz,earEl)
+function [Hnm,fc] = toSH_FDTA(H,N,az,el,fs,w,fc,r,earAz,earEl)
 % Transform HRTF to SH domain at order N using frequency-dependent 
 % time-alignment [1]. Alignment is performed with the method in [2].
 %
 % SIMPLE USAGE EXAMPLE:
-%   Hnm = toSH_TimeAlign(H,15,az,el,48000);
+%   Hnm = toSH_FDTA(H,15,az,el,48000);
 %
 % INPUT:
 %   H = HRTF up to Nyquist frequency (nfreqs x ndirs x 2 ears)
@@ -35,7 +35,7 @@ function [Hnm,fc] = toSH_TimeAlign(H,N,az,el,fs,w,fc,r,earAz,earEl)
 %       Based on Ear Alignment." IEEE/ACM Transactions on Audio, Speech,
 %       and Language Processing 27.12 (2019): 2249-2262.
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
 
 %% Some parameters

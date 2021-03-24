@@ -3,7 +3,7 @@
 % EXTERNAL DEPENDENCIES:
 %   AKtools (www.ak.tu-berlin.de/aktools)
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % March 2021
 
 %% Clear variables

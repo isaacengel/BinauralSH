@@ -11,7 +11,7 @@ function h = fromSH(hnm,fs,az,el,isaligned,r)
 %   az = HRIR azimuth (ndirs x 1) in rad (0=front, pi/2=left)
 %   el = HRIR elevation (ndirs x 1) in rad (0=top, pi/2=front)
 %   isaligned = whether the HRIRs have undergone time-alignment (see
-%       toSH_EarAligned; default=0)
+%       toSH_TA; default=0)
 %   r = head radius in m used for the alignment (default=0.0875)
 %
 % OUTPUT:
@@ -20,7 +20,7 @@ function h = fromSH(hnm,fs,az,el,isaligned,r)
 % EXTERNAL DEPENDENCIES:
 %   AKtools (www.ak.tu-berlin.de/aktools)
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % March 2021
 
 %% Check inputs

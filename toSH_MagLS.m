@@ -6,7 +6,7 @@ function [Hnm,fc] = toSH_MagLS(H,N,az,el,fs,w,fc,frac,r)
 % approach.
 %
 % Important: the method works better if the HRIRs are aligned at t=0. This
-% is taken care of in the function 'toSH'.
+% is taken care of in the wrapper function 'toSH'.
 %
 % SIMPLE USAGE EXAMPLE:
 %   Hnm = toSH_MagLS(H,15,az,el,48000);
@@ -41,7 +41,7 @@ function [Hnm,fc] = toSH_MagLS(H,N,az,el,fs,w,fc,frac,r)
 %       Virtual Reality, Springer Topics in Signal Processing. Springer
 %       International Publishing, Cham.
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
 
 %% Some parameters

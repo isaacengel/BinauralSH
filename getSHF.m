@@ -33,7 +33,7 @@ function G = getSHF(N,kr,option,Nhigh,doplot)
 %       Technische Universität Berlin. Technische Universität Berlin,
 %       Berlin. https://doi.org/10.14279/depositonce-5082
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
 
 %% Fill missing parameters

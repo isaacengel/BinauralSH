@@ -29,7 +29,7 @@ function [Hnm,G1,G2] = applyCovConst(Hnm,Hnm_ref,debug_plots,fs)
 %       spatial audio." Journal of the Audio Engineering Society 61.6
 %       (2013): 403-411.
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
 
 %% Check inputs

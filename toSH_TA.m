@@ -1,13 +1,11 @@
-function Hnm = toSH_EarAligned(H,N,az,el,fs,w,r,earAz,earEl)
-% Transform HRTF to SH domain at order N using ear alignment [1] and
-% truncation. To undo the alignment after SH interpolation, do:
-%
-%   H_aligned = Hnm * Y; % Y = SH coeffs for desired direction
-%   H = H_aligned.*exp(1i*p); % p = second output of this function
-%   h = iffth(H);
+function [Hnm,p] = toSH_TA(H,N,az,el,fs,w,r,earAz,earEl)
+% Transform HRTF to SH domain at order N using time-alignment through phase
+% correction by ear alignment [1], followed by order truncation. To undo
+% the alignment after SH interpolation, use the function fromSH with option
+% isaligned=1
 %
 % SIMPLE USAGE EXAMPLE:
-%   Hnm = toSH_EarAligned(H,15,az,el,48000);
+%   [Hnm,p] = toSH_TA(H,15,az,el,48000);
 %
 % INPUT:
 %   H = HRTF up to Nyquist frequency (nfreqs x ndirs x 2 ears)
@@ -32,7 +30,7 @@ function Hnm = toSH_EarAligned(H,N,az,el,fs,w,r,earAz,earEl)
 %       Based on Ear Alignment." IEEE/ACM Transactions on Audio, Speech,
 %       and Language Processing 27.12 (2019): 2249-2262.
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
 
 %% Some parameters

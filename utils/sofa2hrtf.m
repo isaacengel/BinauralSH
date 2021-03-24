@@ -16,7 +16,7 @@ function [h,fs,az,el,r] = sofa2hrtf(SOFA_obj)
 % EXTERNAL DEPENDENCIES:
 %   SOFA API for Matlab (github.com/sofacoustics/API_MO)
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
 
 %% Check struct fields

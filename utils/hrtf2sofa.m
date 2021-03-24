@@ -16,7 +16,7 @@ function SOFA_obj = hrtf2sofa(h,fs,az,el,r)
 % EXTERNAL DEPENDENCIES:
 %   SOFA API for Matlab (github.com/sofacoustics/API_MO)
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
 
 if ~exist('r','var')

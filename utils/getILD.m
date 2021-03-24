@@ -18,7 +18,7 @@ function ild = getILD(h,fs)
 %       International Conference on Immersive and Interactive Audio. Audio
 %       Engineering Society, 2019.
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
 
 hl = h(:,:,1);

@@ -1,1 +1,1 @@
-This only includes the function sofia_gauss.m
+Functions to generate Gauss and Lebedev grids.

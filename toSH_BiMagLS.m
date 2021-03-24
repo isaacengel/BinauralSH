@@ -1,4 +1,4 @@
-function [Hnm,fc] = toSH_EarAlignedAndMagLS(H,N,az,el,fs,w,fc,frac,r,earAz,earEl)
+function [Hnm,fc] = toSH_BiMagLS(H,N,az,el,fs,w,fc,frac,r,earAz,earEl)
 % Transform HRTF to SH domain at order N by using ear aligning first [1]
 % and frequency-dependent optimisation above a certain cutoff frequency
 % (MagLS [2,3]). The idea is to align the HRIRs first to reduce the
@@ -6,17 +6,14 @@ function [Hnm,fc] = toSH_EarAlignedAndMagLS(H,N,az,el,fs,w,fc,frac,r,earAz,earEl
 % ITDs, and then transform to SH domain, but optimising for magnitude above
 % a certain frequency (e.g. duplex theory).
 %
+% To undo the alignment after SH interpolation, use the function fromSH
+% with option isaligned=1
+%
 % Important: the method works better if the HRIRs are aligned at t=0. This
-% is taken care of in the function 'toSH'.
-%
-% To undo the alignment after SH interpolation, do:
-%
-%   H_aligned = Hnm * Y; % Y = SH coeffs for desired direction
-%   H = H_aligned.*exp(1i*p); % p = second output of this function
-%   h = iffth(H);
+% is taken care of in the wrapper function 'toSH'.
 %
 % SIMPLE USAGE EXAMPLE:
-%   Hnm = toSH_EarAlignedAndMagLS(H,15,az,el,48000);
+%   Hnm = toSH_BiMagLS(H,15,az,el,48000);
 %
 % INPUT:
 %   H = HRTF up to Nyquist frequency (nfreqs x ndirs x 2 ears)
@@ -53,7 +50,7 @@ function [Hnm,fc] = toSH_EarAlignedAndMagLS(H,N,az,el,fs,w,fc,frac,r,earAz,earEl
 %       theory for recording, studio production, sound reinforcement, and
 %       virtual reality. Springer Nature, 2019.
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
 
 %% Some parameters

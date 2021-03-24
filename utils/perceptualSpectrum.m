@@ -22,7 +22,7 @@ function [Xson,w,calibrationGain] = perceptualSpectrum(X,fs,calibrationGain)
 %       filter shapes from notched-noise data." Hearing research 47.1-2
 %       (1990): 103-138.
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
 
 if ~exist('calibrationGain','var')

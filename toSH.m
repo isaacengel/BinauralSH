@@ -1,26 +1,25 @@
 function [hnm,fs,varOut] = toSH(h,N,varargin)
-% Transform HRTF to SH domain at order N. This function serves as a wrapper
-% for the other toSH_* functions and applies some additional pre- and post-
-% processing. The function does the following:
+% Transform HRTF to SH domain at order N. This is a wrapper for the other
+% toSH_* functions and applies some additional pre- and post- processing:
 %   1. Zero-pad the HRIRs if indicated
 %   2. Circular shift so the average HRIR onset falls at t=0
 %   3. Obtain HRTF's SH coefficients using one of the available methods:
-%       a. 'trunc' = direct order truncation (default)
-%       b. 'spSub' = spatial subsampling (toSH_SpSub) [1]
-%       c. 'magLS' = magnitude least squares (toSH_MagLS) [2]
-%       d. 'TA' = frequency-dependent time alignment (toSH_TA) [3]
-%       e. 'ear' = phase correction by ear alignment (toSH_EarAligned) [4]
-%       f. 'spSubTA' = frequency-dependent time alignment + spSub
-%           (toSH_SpSubTimeAlign) [5]
-%       g. 'earMLS' = phase correction by ear alignment + magLS
+%       a. 'Trunc' = direct order truncation (default)
+%       b. 'SpSub' = spatial subsampling (toSH_SpSub) [1]
+%       c. 'MagLS' = magnitude least squares (toSH_MagLS) [2]
+%       d. 'FDTA' = frequency-dependent time alignment (toSH_FDTA) [3]
+%       e. 'TA' = phase correction by ear alignment (toSH_TA) [4]
+%       f. 'SpSubTA' = frequency-dependent time alignment + spSub
+%           (toSH_SpSubMod) [5]
+%       g. 'BiMagLS' = phase correction by ear alignment + magLS
 %   4. Apply tapering weights (e.g. Hann [6] or Max-rE [7])
 %   5. Apply diffuse field EQ [8] or covariance constraint [9, sec.4.11.3]
 %   6. Undo circular shift from step 2
 %   7. Crop HRIR and apply fade in/out if indicated
 %
 % SIMPLE USAGE EXAMPLES:
-%   hnm = toSH(h,15,'mode','magLS','az',az,'el',el,'fs',48000);
-%   hnm = toSH(sofa_h,15,'mode','magLS');
+%   hnm = toSH(h,15,'mode','MagLS','az',az,'el',el,'fs',48000);
+%   hnm = toSH(sofa_h,15,'mode','MagLS');
 %
 % INPUT:
 %   h = HRIRs in SOFA or matrix format (irlen x ndirs x 2 ears)
@@ -32,8 +31,8 @@ function [hnm,fs,varOut] = toSH(h,N,varargin)
 %   fs = sampling frequency in Hz
 %
 % Optional inputs (provided as argument pairs):
-%   mode = any of 'trunc' (def), 'spSub', 'magLS', 'TA', 'ear', 'spSubTA', 
-%       'earMLS' (see descriptions above)
+%   mode = any of 'Trunc' (def), 'SpSub', 'MagLS', 'FDTA', 'TA', 
+%       'SpSubMod', 'BiMagLS' (case insensitive; descriptions above)
 %   w = quadrature weights (ndirs x 1); if empty (def), use pseudoinverse
 %   EQ = one of the available equalisation options:
 %       0 = no EQ (default)
@@ -69,8 +68,8 @@ function [hnm,fs,varOut] = toSH(h,N,varargin)
 %
 % OUTPUTS:
 %   hnm = HRIRs' SH coefficients (nfftOut x (N+1)^2 x 2 ears)
-%   varOut = variable output, i.e. spherical head filter for 'trunc', or fc
-%       for 'magLS'/'earMLS'
+%   varOut = variable output, i.e. spherical head filter for 'Trunc', fc
+%       for 'MagLS'/'BiMagLS', EQ filters if applied, etc.
 %
 % EXTERNAL DEPENDENCIES:
 %   SOFA API for Matlab (github.com/sofacoustics/API_MO)
@@ -122,18 +121,18 @@ function [hnm,fs,varOut] = toSH(h,N,varargin)
 %       spatial audio techniques, 2016 Doctoral Dissertation, Department of
 %       Signal Processing and Acoustics, Aalto University, Finland.
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
 
 % TODO: implement Tikhonov regularization for irregular grids
 % According to Duraiswami 2004, it goes like this:
 % reg_eps = 1e-6; % epsilon
 % D = (1 + N*(N+1)) * eye((N+1)^2); % Tikhonov regularization matrix
-% Y_inv = Y' * (Y * Y' + reg_eps*D)^(-1); % instead of pseudoinverse
+% Y_inv = Y' * (Y * Y' + reg_eps*D)^(-1); % this instead of pseudoinverse
 
 %% Parse inputs
 p = inputParser;
-addParameter(p,'mode','trunc',@ischar) 
+addParameter(p,'mode','Trunc',@ischar) 
 addParameter(p,'az',[])
 addParameter(p,'el',[])
 addParameter(p,'fs',[],@isscalar)
@@ -178,7 +177,7 @@ dualBand = p.Results.dualBand;
 tapering = p.Results.tapering;
 Hnm_ref = p.Results.Hnm_ref;
 
-if isempty(fc) && ~strcmp(mode,'earMLS')
+if isempty(fc) && ~strcmpi(mode,'BiMagLS')
     fc = N*c/(2*pi*r); % if fc not provided, use aliasing frequency
 end
 
@@ -251,51 +250,48 @@ end
 
 %% Preprocess using the indicated method
 
-switch mode
-    
-    case 'trunc' % just order truncation
-        % Order-truncated SH-HRTF (faster than order Nmax + truncation)
-        Y = AKsh(N,[],az*180/pi,el*180/pi,'real').';
-        if ~isempty(w)
-            Y_inv = 4*pi*w.*Y'; % use integrations weights if provided
-        else
-            Y_inv = pinv(Y); % if not, pseudoinverse will do just fine
-        end
-        Hnm = pagemtimes(H,Y_inv);
+if strcmpi(mode,'Trunc') % just order truncation
+    % Order-truncated SH-HRTF (faster than order Nmax + truncation)
+    Y = AKsh(N,[],az*180/pi,el*180/pi,'real').';
+    if ~isempty(w)
+        Y_inv = 4*pi*w.*Y'; % use integrations weights if provided
+    else
+        Y_inv = pinv(Y); % if not, pseudoinverse will do just fine
+    end
+    Hnm = pagemtimes(H,Y_inv);
 
-    case 'spSub' % subsampling, equivalent to virtual loudspeaker decoding
-        Hnm = toSH_SpSub(H,N,az,el,w,Nmax);
+elseif strcmpi(mode,'SpSub') % subsampling aka virtual loudspeaker
+    Hnm = toSH_SpSub(H,N,az,el,w,Nmax);
 
-    case 'TA' % frequency-dependent time-alignment
-        if fc>=fs/2
-            warning('fc (%0.2f Hz) >= fs/2 (%0.2f Hz). TA preprocessing has no effect...',fc,fs/2)
-        end
-        [Hnm,varOut.fc] = toSH_TimeAlign(H,N,az,el,fs,w,fc,r,earAz,earEl);
+elseif strcmpi(mode,'FDTA') % frequency-dependent time-alignment
+    if fc>=fs/2
+        warning('fc (%0.2f Hz) >= fs/2 (%0.2f Hz). FDTA preprocessing has no effect...',fc,fs/2)
+    end
+    [Hnm,varOut.fc] = toSH_TimeAlign(H,N,az,el,fs,w,fc,r,earAz,earEl);
 
-    case 'magLS'
-        if fc>=fs/2
-            warning('fc (%0.2f Hz) >= fs/2 (%0.2f Hz). MagLS preprocessing has no effect...',fc,fs/2)
-        end
-        [Hnm,varOut.fc] = toSH_MagLS(H,N,az,el,fs,w,fc,frac,r);
+elseif strcmpi(mode,'MagLS') % magnitude least squares
+    if fc>=fs/2
+        warning('fc (%0.2f Hz) >= fs/2 (%0.2f Hz). MagLS preprocessing has no effect...',fc,fs/2)
+    end
+    [Hnm,varOut.fc] = toSH_MagLS(H,N,az,el,fs,w,fc,frac,r);
 
-    case 'ear' % phase correction by ear alignment
-        Hnm = toSH_EarAligned(H,N,az,el,fs,w,r,earAz,earEl);
+elseif strcmpi(mode,'TA') % time alignment (ear alignment)
+    Hnm = toSH_EarAligned(H,N,az,el,fs,w,r,earAz,earEl);
 
-    case 'earMLS' % ear alignment + magLS
-        if fc>=fs/2
-            warning('fc (%0.2f Hz) >= fs/2 (%0.2f Hz). EarMLS preprocessing has no effect...',fc,fs/2)
-        end
-        [Hnm,varOut.fc] = toSH_EarAlignedAndMagLS(H,N,az,el,fs,w,fc,frac,r,earAz,earEl);
+elseif strcmpi(mode,'BiMagLS') % ear alignment + MagLS
+    if fc>=fs/2
+        warning('fc (%0.2f Hz) >= fs/2 (%0.2f Hz). BiMagLS preprocessing has no effect...',fc,fs/2)
+    end
+    [Hnm,varOut.fc] = toSH_EarAlignedAndMagLS(H,N,az,el,fs,w,fc,frac,r,earAz,earEl);
         
-    case 'spSubTA'
-        if fc>=fs/2
-            warning('fc (%0.2f Hz) >= fs/2 (%0.2f Hz). SpSubTA preprocessing is the same as SpSub...',fc,fs/2)
-        end
-        [Hnm,varOut.fc] = toSH_SpSubTimeAlign(H,N,az,el,fs,w,fc,r,earAz,earEl,Nmax);
+elseif strcmpi(mode,'SpSubMod') % FDTA + SpSub
+    if fc>=fs/2
+        warning('fc (%0.2f Hz) >= fs/2 (%0.2f Hz). SpSubMod preprocessing is the same as SpSub...',fc,fs/2)
+    end
+    [Hnm,varOut.fc] = toSH_SpSubTimeAlign(H,N,az,el,fs,w,fc,r,earAz,earEl,Nmax);
 
-    otherwise
-        error('Unknown method %s. Use one of these: ''trunc'', ''spSub'', ''TA'', ''magLS'', ''ear'', ''earMLS'', ''spSubTA''',mode)
-
+else
+    error('Unknown method %s. Use one of these: ''Trunc'', ''SpSub'', ''FDTA'', ''MagLS'', ''TA'', ''BiMagLS'', ''SpSubMod''',mode)
 end
 
 %% Tapering/max-rE weights
@@ -381,7 +377,7 @@ if EQ > 0
         
     elseif EQ == 3 % spherical head filters (SHF from [8])
         
-        if ~strcmp(mode,'trunc')
+        if ~strcmpi(mode,'Trunc')
             warning('SHF equalisation should only be used for non-preprocessed HRTFs; consider using EQ=3 (diffuse field EQ) instead')
         end
         if dualBand

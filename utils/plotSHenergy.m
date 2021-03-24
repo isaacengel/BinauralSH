@@ -12,7 +12,7 @@ function plotSHenergy(Hnm,fs)
 %       Based on Ear Alignment." IEEE/ACM Transactions on Audio, Speech,
 %       and Language Processing 27.12 (2019): 2249-2262.
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
 
 %% Some variables

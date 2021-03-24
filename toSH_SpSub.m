@@ -28,7 +28,7 @@ function Hnm = toSH_SpSub(H,N,az,el,w,Nmax)
 %       decoder with head tracking." Audio Engineering Society Convention
 %       6r. Audio Engineering Society, 1996.
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
 
 %% Prepare parameters

@@ -1,9 +1,9 @@
-function [Hnm,fc] = toSH_SpSubTimeAlign(H,N,az,el,fs,w,fc,r,earAz,earEl,Nmax)
+function [Hnm,fc] = toSH_SpSubMod(H,N,az,el,fs,w,fc,r,earAz,earEl,Nmax)
 % Combination of spatial subsampling [1] and frequency-dependent time 
 % alignment [2], as suggested in [3].
 %
 % SIMPLE USAGE EXAMPLE:
-%   Hnm = toSH_SpSubTimeAlign(H,15,az,el,48000);
+%   Hnm = toSH_SpSubMod(H,15,az,el,48000);
 %
 % INPUT:
 %   H = HRTF up to Nyquist frequency (nfreqs x ndirs x 2 ears)
@@ -40,7 +40,7 @@ function [Hnm,fc] = toSH_SpSubTimeAlign(H,N,az,el,fs,w,fc,r,earAz,earEl,Nmax)
 %       Symposium. Paris, France, pp. 149–154.
 %       https://doi.org/10.25836/sasp.2019.09
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
 
 %% Some parameters

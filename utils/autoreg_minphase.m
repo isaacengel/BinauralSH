@@ -22,7 +22,7 @@ function EQ = autoreg_minphase(H,T,fs,maxAmp,frac,flims)
 % REFERENCES:
 %   TODO
 %
-% AUTHOR: Isaac Engel (isaac.engel@imperial.ac.uk)
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
 
 %% Check inputs
