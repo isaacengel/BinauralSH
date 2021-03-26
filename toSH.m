@@ -267,7 +267,7 @@ elseif strcmpi(mode,'FDTA') % frequency-dependent time-alignment
     if fc>=fs/2
         warning('fc (%0.2f Hz) >= fs/2 (%0.2f Hz). FDTA preprocessing has no effect...',fc,fs/2)
     end
-    [Hnm,varOut.fc] = toSH_TimeAlign(H,N,az,el,fs,w,fc,r,earAz,earEl);
+    [Hnm,varOut.fc] = toSH_FDTA(H,N,az,el,fs,w,fc,r,earAz,earEl);
 
 elseif strcmpi(mode,'MagLS') % magnitude least squares
     if fc>=fs/2
@@ -276,19 +276,19 @@ elseif strcmpi(mode,'MagLS') % magnitude least squares
     [Hnm,varOut.fc] = toSH_MagLS(H,N,az,el,fs,w,fc,frac,r);
 
 elseif strcmpi(mode,'TA') % time alignment (ear alignment)
-    Hnm = toSH_EarAligned(H,N,az,el,fs,w,r,earAz,earEl);
+    Hnm = toSH_TA(H,N,az,el,fs,w,r,earAz,earEl);
 
 elseif strcmpi(mode,'BiMagLS') % ear alignment + MagLS
     if fc>=fs/2
         warning('fc (%0.2f Hz) >= fs/2 (%0.2f Hz). BiMagLS preprocessing has no effect...',fc,fs/2)
     end
-    [Hnm,varOut.fc] = toSH_EarAlignedAndMagLS(H,N,az,el,fs,w,fc,frac,r,earAz,earEl);
+    [Hnm,varOut.fc] = toSH_BiMagLS(H,N,az,el,fs,w,fc,frac,r,earAz,earEl);
         
 elseif strcmpi(mode,'SpSubMod') % FDTA + SpSub
     if fc>=fs/2
         warning('fc (%0.2f Hz) >= fs/2 (%0.2f Hz). SpSubMod preprocessing is the same as SpSub...',fc,fs/2)
     end
-    [Hnm,varOut.fc] = toSH_SpSubTimeAlign(H,N,az,el,fs,w,fc,r,earAz,earEl,Nmax);
+    [Hnm,varOut.fc] = toSH_SpSubMod(H,N,az,el,fs,w,fc,r,earAz,earEl,Nmax);
 
 else
     error('Unknown method %s. Use one of these: ''Trunc'', ''SpSub'', ''FDTA'', ''MagLS'', ''TA'', ''BiMagLS'', ''SpSubMod''',mode)

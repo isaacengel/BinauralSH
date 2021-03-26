@@ -1,4 +1,4 @@
-function [Hnm,fc] = toSH_BiMagLS(H,N,az,el,fs,w,fc,frac,r,earAz,earEl)
+function [Hnm,fc,p] = toSH_BiMagLS(H,N,az,el,fs,w,fc,frac,r,earAz,earEl)
 % Transform HRTF to SH domain at order N by using ear aligning first [1]
 % and frequency-dependent optimisation above a certain cutoff frequency
 % (MagLS [2,3]). The idea is to align the HRIRs first to reduce the
