@@ -59,5 +59,5 @@ if ~exist('w','var') || ~isempty(w)
 else
     Y_inv = pinv(Y); % if not, the pseudoinverse will do just fine
 end
-Hnm = pagemtimes(H,Y_inv);
+Hnm = mult3(H,Y_inv);
 

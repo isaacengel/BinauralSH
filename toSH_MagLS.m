@@ -65,7 +65,7 @@ if ~exist('w','var') || ~isempty(w)
 else
     Y_inv = pinv(Y); % if not, the pseudoinverse will do just fine
 end
-Hnm = pagemtimes(H,Y_inv); % SH coeffs up to N
+Hnm = mult3(H,Y_inv); % SH coeffs up to N
 
 %% Apply simplified MagLS from [2] sec.4.11.2
 
@@ -99,11 +99,11 @@ else
 end
 
 for fi=fc1_ind:nfreqs % for frequencies above the cutoff
-    prevH = pagemtimes(Hnm(fi-1,:,:),Y); % previous fi estimated HRTF
+    prevH = mult3(Hnm(fi-1,:,:),Y); % previous fi estimated HRTF
     mag = abs(H(fi,:,:)); % magnitude of actual HRTF
     phase = angle(prevH); % phase of previous fi
     currH = mag.*exp(1i*phase); % current fi estimated HRTF
-    newHnm = pagemtimes(currH,Y_inv); % magLS estimation of the SH-HRTF
+    newHnm = mult3(currH,Y_inv); % magLS estimation of the SH-HRTF
     Hnm(fi,:,:) = sw(fi)*newHnm + (1-sw(fi))*Hnm(fi,:,:); % smoothing
 end
 

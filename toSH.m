@@ -146,11 +146,11 @@ addParameter(p,'c',343,@isscalar)
 addParameter(p,'earAz',[pi/2, 3*pi/2])  
 addParameter(p,'earEl',[pi/2, pi/2]) 
 addParameter(p,'Nmax',35,@isscalar) 
-addParameter(p,'covConstPlots',false,@islogical) 
+addParameter(p,'covConstPlots',false,@isscalar) 
 addParameter(p,'fadeIn',0,@isscalar);
 addParameter(p,'fadeOut',0,@isscalar);
 addParameter(p,'frac',2,@isscalar);
-addParameter(p,'dualBand',false,@islogical)
+addParameter(p,'dualBand',false,@isscalar)
 addParameter(p,'tapering',0,@isscalar)
 addParameter(p,'Hnm_ref',[])
 
@@ -232,7 +232,7 @@ if alignOption == 1 % Option 1: phase delay
     else
         Y0_inv = pinv(Y0); % if not, the pseudoinverse will do just fine
     end
-    H0 = pagemtimes(H,Y0_inv); % 0th order SH signal
+    H0 = mult3(H,Y0_inv); % 0th order SH signal
     pd = -unwrap(angle(H0(2:end,1,:)))./(2*pi*f(2:end)); % phase delay in s
     pd_mean = mean(pd,'all'); % avg delay
     H = H.*exp(1i*2*pi*f*pd_mean); % subtract delay
@@ -258,7 +258,7 @@ if strcmpi(mode,'Trunc') % just order truncation
     else
         Y_inv = pinv(Y); % if not, pseudoinverse will do just fine
     end
-    Hnm = pagemtimes(H,Y_inv);
+    Hnm = mult3(H,Y_inv);
 
 elseif strcmpi(mode,'SpSub') % subsampling aka virtual loudspeaker
     Hnm = toSH_SpSub(H,N,az,el,w,Nmax);
@@ -328,8 +328,7 @@ if tapering > 0
             Hnm_hf = Hnm_hf.*exp(1i*p); % undo filter delay
 
             % Apply weights to high frequency version
-            Hnm_hf = pagemtimes(Hnm_hf,diag(wnm));
-        %     Hnm_hf = Hnm_hf .* wnm.'; % faster?
+            Hnm_hf = Hnm_hf .* wnm.';
 
             % Output is the sum of the two
             Hnm = Hnm_lf + Hnm_hf;
@@ -352,9 +351,9 @@ if EQ > 0
                 kr = 2*pi*f*r/c;
                 p = earAlign(kr,az,el,earAz,earEl);
                 Hear = H.*exp(-1i*p);
-                Hnm_ref = pagemtimes(abs(Hear),pinv(Y));
+                Hnm_ref = mult3(abs(Hear),pinv(Y));
             else 
-                Hnm_ref = pagemtimes(abs(H),pinv(Y));
+                Hnm_ref = mult3(abs(H),pinv(Y));
             end
         end
     end

@@ -44,15 +44,15 @@ if ~exist('w','var') || ~isempty(w)
 else
     Ymax_inv = pinv(Ymax); % if not, the pseudoinverse will do just fine
 end
-Hnm_max = pagemtimes(H,Ymax_inv);
+Hnm_max = mult3(H,Ymax_inv);
 
 % Then, resample to an appropriately sized sparse grid (Gauss)
 sgrid = sofia_gauss(2*(N+1),N+1,0);
 Ymax_s = AKsh(Nmax, [], sgrid(:,1)*180/pi, sgrid(:,2)*180/pi, 'real').';
-Hs = pagemtimes(Hnm_max,Ymax_s); % = cat(3,Hnm_max(:,:,1)*Ymax_s,Hnm_max(:,:,2)*Ymax_s);
+Hs = mult3(Hnm_max,Ymax_s); % = cat(3,Hnm_max(:,:,1)*Ymax_s,Hnm_max(:,:,2)*Ymax_s);
 
 % Finally, convert to SH again at the target low order
 Ys = AKsh(N, [], sgrid(:,1)*180/pi, sgrid(:,2)*180/pi, 'real').';
 Ys_inv = 4*pi*diag(sgrid(:,3))*Ys'; 
-Hnm = pagemtimes(Hs,Ys_inv);
+Hnm = mult3(Hs,Ys_inv);
  

@@ -44,7 +44,7 @@ kr = k*r;
 %% Process
 Y = AKsh(N, [], az*180/pi, el*180/pi, 'real').'; % SH coefficients
 Hnm = ffth(hnm,nfft,1); % to frequency domain
-H = pagemtimes(Hnm,Y); % interpolate
+H = mult3(Hnm,Y); % interpolate
 if isaligned % re-align if specified
     p = earAlign(kr,az,el);
     H = H.*exp(1i*p);
