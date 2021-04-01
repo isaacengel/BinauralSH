@@ -1,3 +1,6 @@
+% Note: modified so it doesn't display a message in the console
+% (Isaac Engel, April 2021)
+
 % /// ASAR/MARA Research Group
 %  
 % Technology Arts Sciences TH Köln
@@ -113,7 +116,7 @@
 
 function [gridData, Npoints, Nmax] = sofia_gauss(AZnodes, ELnodes, plot)
 
-disp('SOFiA Gauss Grid R13-0306');
+% disp('SOFiA Gauss Grid R13-0306');
 
 if nargin<3
     plot = true;

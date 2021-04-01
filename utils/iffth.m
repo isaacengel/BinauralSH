@@ -7,12 +7,8 @@ function x = iffth(y,nfft,dim)
 % OUTPUT:
 %   x = inverse discrete Fourier transform of the full-spectrum y
 %
-% EXTERNAL DEPENDENCIES:
-%   AKtools (www.ak.tu-berlin.de/aktools)
-%
 % AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
-
 
 if ~exist('nfft','var')
     nfft = [];

@@ -29,9 +29,6 @@ function [Hnm,fc] = toSH_MagLS(H,N,az,el,fs,w,fc,frac,r)
 %   Hnm = HRTF's SH coefficients (nfreqs x (N+1)^2 x 2 ears)
 %   fc = see above
 %
-% EXTERNAL DEPENDENCIES:
-%   AKtools (www.ak.tu-berlin.de/aktools)
-%
 % REFERENCES:
 %   [1] Schörkhuber, C., Zaunschirm, M., Höldrich, R., 2018. Binaural
 %       Rendering of Ambisonic Signals via Magnitude Least Squares.

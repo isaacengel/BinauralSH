@@ -3,7 +3,6 @@
 % ILD is calculated according to [2]
 %
 % EXTERNAL DEPENDENCIES:
-%   SOFA API for Matlab (github.com/sofacoustics/API_MO)
 %   Auditory Modeling Toolbox (amtoolbox.sourceforge.net)
 %
 % REFERENCES:

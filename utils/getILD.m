@@ -8,9 +8,6 @@ function ild = getILD(h,fs)
 % OUTPUT:
 %   ild = ILD in dB
 %
-% EXTERNAL DEPENDENCIES:
-%   AKtools (www.ak.tu-berlin.de/aktools)
-%
 % REFERENCES:
 %   [1] McKenzie, Thomas, Damian Murphy, and Gavin Kearney. "Interaural
 %       level difference optimisation of first-order binaural Ambisonic

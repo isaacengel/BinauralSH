@@ -1,3 +1,6 @@
+% Note: modified so it doesn't display a message in the console
+% (Isaac Engel, April 2021)
+
 % /// ASAR/MARA Research Group
 %  
 % Technology Arts Sciences TH Köln
@@ -108,7 +111,7 @@
 
 function [gridData, Npoints, Nmax] = sofia_lebedev(degree, plot)
 
-disp('SOFiA Lebedev Grid R13-0306');
+% disp('SOFiA Lebedev Grid R13-0306');
 
 degrees_avail=[6, 14, 26, 38, 50, 74, 86, 110, 146, 170, 194, 230,... 
 266, 302, 350, 434, 590, 770, 974, 1202, 1454, 1730, 2030, 2354, 2702,... 

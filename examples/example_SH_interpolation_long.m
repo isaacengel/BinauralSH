@@ -22,9 +22,7 @@
 % few large files (~400MB in total)
 %
 % EXTERNAL DEPENDENCIES:
-%   SOFA API for Matlab (github.com/sofacoustics/API_MO)
 %   Auditory Modeling Toolbox (amtoolbox.sourceforge.net)
-%   AKtools (www.ak.tu-berlin.de/aktools)
 %
 % AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % March 2021

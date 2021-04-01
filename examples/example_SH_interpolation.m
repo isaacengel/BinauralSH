@@ -1,7 +1,7 @@
 % Simple SH interpolation example
 %
 % EXTERNAL DEPENDENCIES:
-%   AKtools (www.ak.tu-berlin.de/aktools)
+%   SOFA API for Matlab (github.com/sofacoustics/API_MO)
 %
 % AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % March 2021

@@ -22,9 +22,6 @@ function [Hnm,fc] = toSH_SpSubMod(H,N,az,el,fs,w,fc,r,earAz,earEl,Nmax)
 %   Hnm = HRTF's SH coefficients (nfreqs x (N+1)^2 x 2 ears)
 %   fc = see above
 %
-% EXTERNAL DEPENDENCIES:
-%   AKtools (www.ak.tu-berlin.de/aktools)
-%
 % REFERENCES:
 %   [1] Zaunschirm, M., Schörkhuber, C., Höldrich, R., 2018. Binaural
 %       rendering of Ambisonic signals by head-related impulse response

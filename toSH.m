@@ -73,8 +73,7 @@ function [hnm,fs,varOut] = toSH(h,N,varargin)
 %
 % EXTERNAL DEPENDENCIES:
 %   SOFA API for Matlab (github.com/sofacoustics/API_MO)
-%   Auditory Modeling Toolbox (amtoolbox.sourceforge.net)
-%   AKtools (www.ak.tu-berlin.de/aktools)
+%   (only if the input HRTF is provided in SOFA format)
 %
 % REFERENCES:
 %   [1] Bernschütz, Benjamin, et al. "Binaural reproduction of plane waves

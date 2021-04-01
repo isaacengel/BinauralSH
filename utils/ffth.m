@@ -6,8 +6,6 @@ function y = ffth(x,nfft,dim)
 % OUTPUT:
 %   y = discrete Fourier transform of x, up to Nyquist frequency.
 %
-% EXTERNAL DEPENDENCIES:
-%   AKtools (www.ak.tu-berlin.de/aktools)
 %
 % AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021

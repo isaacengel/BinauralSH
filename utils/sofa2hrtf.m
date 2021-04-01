@@ -13,9 +13,6 @@ function [h,fs,az,el,r] = sofa2hrtf(SOFA_obj)
 %   el = colatitude in rad (dirs x 1)
 %   r = head radius in m (def=0.085)
 %
-% EXTERNAL DEPENDENCIES:
-%   SOFA API for Matlab (github.com/sofacoustics/API_MO)
-%
 % AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
 

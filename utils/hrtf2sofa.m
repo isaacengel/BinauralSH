@@ -13,9 +13,6 @@ function SOFA_obj = hrtf2sofa(h,fs,az,el,r)
 % OUTPUT:
 %   SOFA_obj = SOFA object, e.g. obtained from SOFAload()
 %
-% EXTERNAL DEPENDENCIES:
-%   SOFA API for Matlab (github.com/sofacoustics/API_MO)
-%
 % AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
 
@@ -47,4 +44,4 @@ SOFA_obj.API.N = size(SOFA_obj.Data.IR,3);
 SOFA_obj.API.Dimensions.Data.IR = 'MRN'; % time-measurements-receivers
 SOFA_obj.GLOBAL_SOFAConventions = 'SimpleFreeFieldHRIR';
 SOFA_obj.GLOBAL_RoomType = 'free field';
-SOFA_obj.GLOBAL_Comment = 'Generated with ''makesofa()'' from an HRIR';
+SOFA_obj.GLOBAL_Comment = 'Generated with ''hrtf2sofa()'' from an HRIR';

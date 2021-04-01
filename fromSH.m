@@ -17,9 +17,6 @@ function h = fromSH(hnm,fs,az,el,isaligned,r)
 % OUTPUT:
 %   h = HRIRs in matrix format (irlen x ndirs x 2 ears)
 %
-% EXTERNAL DEPENDENCIES:
-%   AKtools (www.ak.tu-berlin.de/aktools)
-%
 % AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % March 2021
 
@@ -32,7 +29,7 @@ if ~exist('r','var')
 end
 
 %% Get relevant parameters
-[irlen,nsh,nears] = size(hnm);
+[irlen,nsh,~] = size(hnm);
 nfft = 2^nextpow2(irlen);
 nfreqs = nfft/2+1;
 f = linspace(0,fs/2,nfreqs).'; % frequency vector

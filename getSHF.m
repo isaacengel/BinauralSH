@@ -14,9 +14,6 @@ function G = getSHF(N,kr,option,Nhigh,doplot)
 % OUTPUT:
 %   G = spherical head filters (nfreqs x 1)
 %
-% EXTERNAL DEPENDENCIES:
-%   AKtools (www.ak.tu-berlin.de/aktools)
-%
 % REFERENCES:
 %   [1] Ben-Hur, Zamir, et al. "Spectral equalization in binaural signals
 %       represented by order-truncated spherical harmonics." The Journal of

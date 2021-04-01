@@ -3,21 +3,24 @@ function p = earAlign(kr,az,el,earAz,earEl)
 %   H_aligned = H.*exp(-1i*p);
 %   H = H_aligned.*exp(1i*p);
 %
-% Inputs:
+% INPUT:
 %   kr = kr vector = 2*pi*f*r/c (nfreqs x 1)
 %   az = HRIR azimuth (ndirs x 1) in rad
 %   el = HRIR elevation (ndirs x 1) in rad (0=top, pi/2=front)
 %   earAz = left/right ear azimuth (1 x 2) in rad (def=[pi/2, 3*pi/2])
 %   earEl = left/right ear elevation (1 x 2) in rad (def = [pi/2, pi/2])
 %   
-% Output:
+% OUTPUT:
 %   p = phase correction (nfreqs x ndirs x 2 ears)
 %
-% Refs:
+% REFERENCES:
 %   [1] Ben-Hur, Zamir, et al. "Efficient Representation and Sparse
-%   Sampling of Head-Related Transfer Functions Using Phase-Correction
-%   Based on Ear Alignment." IEEE/ACM Transactions on Audio, Speech, and
-%   Language Processing 27.12 (2019): 2249-2262.
+%       Sampling of Head-Related Transfer Functions Using Phase-Correction
+%       Based on Ear Alignment." IEEE/ACM Transactions on Audio, Speech,
+%       and Language Processing 27.12 (2019): 2249-2262.
+%
+% AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
+% March 2021
 
 %% Prepare parameters
 if ~exist('earAz','var') || isempty(earAz)

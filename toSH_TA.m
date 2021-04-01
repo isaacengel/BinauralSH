@@ -21,9 +21,6 @@ function [Hnm,p] = toSH_TA(H,N,az,el,fs,w,r,earAz,earEl)
 % OUTPUT:
 %   Hnm = HRTF's SH coefficients (nfreqs x (N+1)^2 x 2 ears)
 %
-% EXTERNAL DEPENDENCIES:
-%   AKtools (www.ak.tu-berlin.de/aktools)
-%
 % REFERENCES:
 %   [1] Ben-Hur, Zamir, et al. "Efficient Representation and Sparse
 %       Sampling of Head-Related Transfer Functions Using Phase-Correction

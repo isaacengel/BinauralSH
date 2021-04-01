@@ -17,9 +17,6 @@ function Hnm = toSH_SpSub(H,N,az,el,w,Nmax)
 % OUTPUT:
 %   Hnm = HRTF's SH coefficients (nfreqs x (N+1)^2 x 2 ears)
 %
-% EXTERNAL DEPENDENCIES:
-%   AKtools (www.ak.tu-berlin.de/aktools)
-%
 % REFERENCES:
 %   [1] Bernschütz, Benjamin, et al. "Binaural reproduction of plane waves
 %       with reduced modal order." Acta Acustica united with Acustica 100.5

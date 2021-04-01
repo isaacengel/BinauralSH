@@ -35,9 +35,6 @@ function [Hnm,fc,p] = toSH_BiMagLS(H,N,az,el,fs,w,fc,frac,r,earAz,earEl)
 %   Hnm = HRTF's SH coefficients (nfreqs x (N+1)^2 x 2 ears)
 %   fc = see above
 %
-% EXTERNAL DEPENDENCIES:
-%   AKtools (www.ak.tu-berlin.de/aktools)
-%
 % REFERENCES:
 %   [1] Ben-Hur, Zamir, et al. "Efficient Representation and Sparse
 %       Sampling of Head-Related Transfer Functions Using Phase-Correction
