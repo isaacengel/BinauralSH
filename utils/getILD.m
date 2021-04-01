@@ -41,7 +41,7 @@ md = 20*log10(abs(Hl_hp)./abs(Hr_hp));
 nbands = 30;
 lowFreq = 20;
 highFreq = 20000;
-cf = ERBSpace(lowFreq, highFreq, nbands);
+cf = AMT_ERBSpace(lowFreq, highFreq, nbands);
 cf = flipud(cf); % order from low to high
 cf(end+1) = highFreq; % last frequency
 

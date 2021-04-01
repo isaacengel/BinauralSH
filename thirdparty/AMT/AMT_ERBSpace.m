@@ -1,4 +1,4 @@
-function cfArray = ERBSpace(lowFreq, highFreq, N)
+function cfArray = AMT_ERBSpace(lowFreq, highFreq, N)
 % function cfArray = ERBSpace(lowFreq, highFreq, N)
 % This function computes an array of N frequencies uniformly spaced between
 % highFreq and lowFreq on an ERB scale.  N is set to 100 if not specified.
@@ -8,6 +8,10 @@ function cfArray = ERBSpace(lowFreq, highFreq, N)
 % For a definition of ERB, see Moore, B. C. J., and Glasberg, B. R. (1983).
 % "Suggested formulae for calculating auditory-filter bandwidths and
 % excitation patterns," J. Acoust. Soc. Am. 74, 750-753.
+%
+% NOTE: this is the function ERBSpace from the Auditory Modeling Toolbox
+% v0.10.0. It was renamed to avoid conflicts in case the AMT is installed
+% (Isaac Engel, April 2021)
 
 if nargin < 1
 	lowFreq = 100;
