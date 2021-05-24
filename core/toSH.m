@@ -232,9 +232,13 @@ if alignOption == 1 % Option 1: phase delay
         Y0_inv = pinv(Y0); % if not, the pseudoinverse will do just fine
     end
     H0 = mult3(H,Y0_inv); % 0th order SH signal
-    pd = -unwrap(angle(H0(2:end,1,:)))./(2*pi*f(2:end)); % phase delay in s
-    pd_mean = mean(pd,'all'); % avg delay
-    H = H.*exp(1i*2*pi*f*pd_mean); % subtract delay
+    for ii = 1:size(H0, 3)
+      pd(:,ii) = -unwrap(angle(H0(2:end,1,ii)))./(2*pi*f(2:end)); % phase delay in s
+    end
+    pd_mean = mean(pd(:)); % avg delay
+    for jj = 1:size(H, 3)
+      H(:,:,jj) = H(:,:,jj).*repmat(exp(1i*2*pi*f*pd_mean), 1, size(H,2)); % subtract delay
+    end
 elseif alignOption == 2 % Option 2: onset detection
     onsL = AKonsetDetect(h(:,:,1)); % left ear onsets
     onsR = AKonsetDetect(h(:,:,2)); % right rear onsets
@@ -320,15 +324,17 @@ if tapering > 0
 
             % Apply filters to the SH-HRTF
             nfreqs = size(H,1);
-            Hnm_lf = Hnm.*ffth(lpf,2*(nfreqs-1)); % low-passed version
-            Hnm_hf = Hnm.*ffth(hpf,2*(nfreqs-1)); % high-passed version
-            p = linspace(0,pi*(lFilt/2+1),nfreqs).'; % filter phase delay
-            Hnm_lf = Hnm_lf.*exp(1i*p); % undo filter delay
-            Hnm_hf = Hnm_hf.*exp(1i*p); % undo filter delay
-
+            for ll = 1:size(Hnm, 3)
+                Hnm_lf(:,:,ll) = Hnm(:,:,ll).*repmat(ffth(lpf,2*(nfreqs-1)), 1, size(Hnm, 2)); % low-passed version
+                Hnm_hf(:,:,ll) = Hnm(:,:,ll).*repmat(ffth(hpf,2*(nfreqs-1)), 1, size(Hnm, 2)); % high-passed version
+                p = linspace(0,pi*(lFilt/2+1),nfreqs).'; % filter phase delay
+                Hnm_lf(:,:,ll) = Hnm_lf(:,:,ll).*repmat(exp(1i*p), 1, size(Hnm_lf, 2)); % undo filter delay
+                Hnm_hf(:,:,ll) = Hnm_hf(:,:,ll).*repmat(exp(1i*p), 1, size(Hnm_hf, 2)); % undo filter delay
+            end
+            for mm = 1:size(Hnm_hf, 3)
             % Apply weights to high frequency version
-            Hnm_hf = Hnm_hf .* wnm.';
-
+            Hnm_hf(:,:,mm) = Hnm_hf(:,:,mm) .* repmat(wnm.', size(Hnm_hf, 1), 1);
+            end
             % Output is the sum of the two
             Hnm = Hnm_lf + Hnm_hf;
         end
@@ -388,8 +394,8 @@ if EQ > 0
         
     end
     
-    Hnm_EQ(:,:,1) = Hnm(:,:,1).*G1(:,1) + Hnm(:,:,2).*G2(:,1);
-    Hnm_EQ(:,:,2) = Hnm(:,:,2).*G1(:,2) + Hnm(:,:,1).*G2(:,2);
+    Hnm_EQ(:,:,1) = Hnm(:,:,1).*repmat(G1(:,1), 1, size(Hnm(:,:,1), 2)) + Hnm(:,:,2).*repmat(G2(:,1), 1, size(Hnm(:,:,1), 2));
+    Hnm_EQ(:,:,2) = Hnm(:,:,2).*repmat(G1(:,2), 1, size(Hnm(:,:,2), 2)) + Hnm(:,:,1).*repmat(G2(:,2), 1, size(Hnm(:,:,2), 2));
     Hnm = Hnm_EQ;
     clear Hnm_EQ
  
@@ -401,7 +407,10 @@ varOut.G2 = G2;
 %% Postprocessing
 % Undo alignment at t=0
 if alignOption == 1 % Option 1: phase delay
-    Hnm = Hnm.*exp(-1i*2*pi*f*pd_mean);
+    %Hnm = Hnm.*exp(-1i*2*pi*f*pd_mean);
+    for jj = 1:size(H, 3)
+      Hnm(:,:,jj) = Hnm(:,:,jj).*repmat(exp(1i*2*pi*f*pd_mean), 1, size(Hnm,2)); % subtract delay
+    end
     hnm = iffth(Hnm,[],1);
 elseif alignOption == 2 % Option 2: onset detection + time shift
     hnm = iffth(Hnm,[],1);
@@ -418,7 +427,9 @@ end
 fadeInVec = sin(linspace(0,pi/2,fadeIn).').^2; % fade in
 fadeOutVec = cos(linspace(0,pi/2,fadeOut).').^2; % fade out
 win = [fadeInVec;ones(size(hnm,1)-fadeIn-fadeOut,1);fadeOutVec]; % window
-hnm = hnm.*win; % apply window
+for kk=1:size(hnm, 3)
+  hnm(:,:,kk) = hnm(:,:,kk).*repmat(win, 1, size(hnm, 2)); % apply window
+end
 if nfftOut > nfft
     hnm(end+1:nfftOut,:,:) = 0; % zero-pad
 end

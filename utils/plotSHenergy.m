@@ -106,11 +106,11 @@ for ch = 1:nch
     if logscale
         set(gca,'XScale','log')
         xticks([100,1000,10000,20000])
-        xticklabels(["100","1k","10k","20k"])    
+        xticklabels(['100','1k','10k','20k'])    
         xlabel('f (Hz)')
     else    
-        xticks([1000,10000,20000])
-        xticklabels(["1","10","20"])
+%        xticks([1000,10000,20000])
+%        xticklabels(['1','10','20'])
         set(gca,'XScale','lin')
         xlabel('f (kHz)')
     end
@@ -121,8 +121,14 @@ for ch = 1:nch
     ylim([0 Nmax])
 
     % Find b90 and b99
-    b90 = sum(~(ecum(:,:,ch) > 0.9*ecum(:,end,ch)),2);
-    b99 = sum(~(ecum(:,:,ch) > 0.99*ecum(:,end,ch)),2);
+    b90 = 0;
+    b99 = 0;
+    for ii = 1:size(ecum, 2)
+    %b90 = sum(~(ecum(:,:,ch) > 0.9*ecum(:,end,ch)),2);
+    b90 = b90 + ~(ecum(:,ii,ch) > 0.9*ecum(:,end,ch));
+    %b99 = sum(~(ecum(:,:,ch) > 0.99*ecum(:,end,ch)),2);
+    b99 = b99 + ~(ecum(:,ii,ch) > 0.99*ecum(:,end,ch));
+    end
     % Plot them
     hold on
     plot(fvec,b90,':','LineWidth',1,'Color','r')
