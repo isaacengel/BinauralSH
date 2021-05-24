@@ -31,8 +31,10 @@ nfft = max(4096,size(h,1));
 Hl = ffth(hl,nfft);
 Hr = ffth(hr,nfft);
 Hpf = ffth(hpf,nfft);
-Hl_hp = Hl .* Hpf;
-Hr_hp = Hr .* Hpf;
+Hl_hp = Hl .* repmat(Hpf, 1, size(Hl, 2));
+Hr_hp = Hr .* repmat(Hpf, 1, size(Hl, 2));
+%Hl_hp = Hl .* Hpf;
+%Hr_hp = Hr .* Hpf;
 
 % Get magnitude difference
 md = 20*log10(abs(Hl_hp)./abs(Hr_hp));
