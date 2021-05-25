@@ -1,6 +1,7 @@
 # BinauralSH
-Another Matlab library for spherical harmonic manipulation of HRTFs and binaural rendering.
-Still in construction!
+Another Matlab library for spherical harmonic manipulation of HRTFs and binaural rendering. Still in construction!
+
+For examples, check https://github.com/isaacengel/BinauralSH-Examples
 
 # Citation
 To cite this repository, please use:
