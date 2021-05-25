@@ -29,15 +29,11 @@ f=filesep;
 if exist('addpath')
     addpath(basepath);
     addpath([basepath f 'core']);
-    addpath([basepath f 'examples']);
-    addpath([basepath f 'hrtfs']);
     addpath(genpath([basepath f 'thirdparty']));
     addpath([basepath f 'utils']);
 else
     path(path,basepath);
     path(path,[basepath f 'core']);
-    path(path,[basepath f 'examples']);
-    path(path,[basepath f 'hrtfs']);
     path(path,genpath([basepath f 'thirdparty']));
     path(path,[basepath f 'utils']);
 end

@@ -20,8 +20,6 @@ f=filesep;
 if exist('rmpath')
     rmpath(basepath);
     rmpath([basepath f 'core']);
-    rmpath([basepath f 'examples']);
-    rmpath([basepath f 'hrtfs']);
     rmpath([basepath f 'thirdparty']);
     rmpath([basepath f 'utils']);
 end
