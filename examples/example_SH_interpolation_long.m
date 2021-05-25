@@ -39,10 +39,13 @@ itdJND = 20; % ITD JND for plots, according to Klockgether 2016
 ildJND = 0.6; % ILD JND for plots, according to Klockgether 2016
 
 % HRTF file
-hrirname = '../hrtfs/FABIAN_HRIR_measured_HATO_0.sofa'; % change as needed
+basepath=which('binauralSH_start'); % base path
+basepath=basepath(1:end-19); % Kill the function name from the path.
+
+hrirname = [basepath,'/hrtfs/FABIAN_HRIR_measured_HATO_0.sofa'];
 
 % Working directory
-workdir = '../processed_data'; % change as needed
+workdir = [basepath,'/processed_data']; % change as needed
 [~,hrtfname] = fileparts(hrirname);
 workdir = [workdir,'/',hrtfname];
 if ~isfolder(workdir)
@@ -167,7 +170,7 @@ else
     fprintf('\t\tRunning reijniers2014...\n'); tic
     % Make DTF and SOFA object for Lebedev grid directions only
     dtf = getDTF(h(:,indLeb,:),fs);
-    SOFA_obj = makesofa(dtf,fs,azLeb,elLeb);
+    SOFA_obj = hrtf2sofa(dtf,fs,azLeb,elLeb);
     % Preprocessing source information (demo_reijniers2014)
     [template_loc, target] = reijniers2014_preproc(SOFA_obj);
     % Run virtual experiments (demo_reijniers2014)
@@ -189,7 +192,7 @@ else
     results.ext = nan(ndirs,1);
     template_ext = cell(ndirs,1);
     for j=1:ndirs
-        template_ext{j} = makesofa(dtf(:,j,:),fs,azMP(j),elMP(j));
+        template_ext{j} = hrtf2sofa(dtf(:,j,:),fs,azMP(j),elMP(j));
         % Get externalisation values
         results.ext(j) = baumgartner2020(template_ext{j},template_ext{j});
     end
@@ -272,7 +275,7 @@ for N=N_vec % iterate through spatial orders
             fprintf('\t\tRunning reijniers2014...\n'); tic
             % Make DTF and SOFA object for Lebedev grid directions only
             dtf = getDTF(hInterp(:,indLeb,:),fs);
-            SOFA_obj = makesofa(dtf,fs,azLeb,elLeb);
+            SOFA_obj = hrtf2sofa(dtf,fs,azLeb,elLeb);
             % Preprocessing source information (demo_reijniers2014)
             [~, target] = reijniers2014_preproc(SOFA_obj);
             % Run virtual experiments (demo_reijniers2014)
@@ -292,7 +295,7 @@ for N=N_vec % iterate through spatial orders
             ndirs = numel(elMP);
             results.ext = nan(ndirs,1);
             for j=1:ndirs
-                target = makesofa(dtf(:,j,:),fs,azMP(j),elMP(j));
+                target = hrtf2sofa(dtf(:,j,:),fs,azMP(j),elMP(j));
                 % Get externalisation values
                 results.ext(j) = baumgartner2020(target,template_ext{j});
             end

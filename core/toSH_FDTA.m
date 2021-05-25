@@ -13,7 +13,7 @@ function [Hnm,fc] = toSH_FDTA(H,N,az,el,fs,w,fc,r,earAz,earEl)
 %   fs = sampling frequency in Hz
 %   w = quadrature weights (ndirs x 1); if empty, use pseudoinverse
 %   fc = cutoff frequency above which the HRIRs are aligned (def=2500)
-%   r = head radius in m (def=0.085)
+%   r = head radius in m (def=0.0875)
 %   earAz = left/right ear azimuth (1 x 2) in rad (def=[pi/2, 3*pi/2])
 %   earEl = left/right ear elevation (1 x 2) in rad (def = [pi/2, pi/2])
 %   
@@ -40,7 +40,7 @@ if ~exist('fc','var') || isempty(fc)
     fc = 2500; % based on MagLS paper (Schorkhuber et al, 2018)
 end
 if ~exist('r','var') || isempty(r)
-    r = 0.085;
+    r = 0.0875;
 end
 if ~exist('earAz','var') || isempty(earAz)
     earAz = [pi/2, 3*pi/2];

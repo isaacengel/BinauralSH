@@ -11,7 +11,11 @@ clear
 
 %% Parameters
 N = 44; % SH order (~40 is high enough for very accurate interpolation)
-filename = '../hrtfs/FABIAN_HRIR_measured_HATO_0.sofa';
+
+basepath=which('binauralSH_start'); % base path
+basepath=basepath(1:end-19); % Kill the function name from the path.
+
+hrirname = [basepath,'/hrtfs/FABIAN_HRIR_measured_HATO_0.sofa'];
 
 %% Load HRTF
 SOFA_obj = SOFAload(filename); % load HRTF in SOFA format

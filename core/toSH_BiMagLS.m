@@ -27,7 +27,7 @@ function [Hnm,fc,p] = toSH_BiMagLS(H,N,az,el,fs,w,fc,frac,r,earAz,earEl)
 %   frac = half-length of the transition band (def=2 -> 1/2 octave). E.g.
 %   if fc=623.89 Hz, smooth between 349.65 and 882.31 Hz. If frac==0, don't
 %   smooth.
-%   r = head radius in m (def=0.085)
+%   r = head radius in m (def=0.0875)
 %   earAz = left/right ear azimuth (1 x 2) in rad (def=[pi/2, 3*pi/2])
 %   earEl = left/right ear elevation (1 x 2) in rad (def = [pi/2, pi/2])
 %   
@@ -55,7 +55,7 @@ if ~exist('w','var')
     w = [];
 end
 if ~exist('r','var') || isempty(r)
-    r = 0.085;
+    r = 0.0875;
 end
 if ~exist('fc','var') || isempty(fc)
     c = 343; % speed of sound (m/s)

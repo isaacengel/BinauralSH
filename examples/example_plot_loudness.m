@@ -16,13 +16,16 @@
 clear
 
 %% Parameters
+basepath=which('binauralSH_start'); % base path
+basepath=basepath(1:end-19); % Kill the function name from the path.
+
 filenames = { % put here the paths to the HRTFs' SOFA files
-    '../hrtfs/FABIAN_HRIR_measured_HATO_0.sofa'
-    '../hrtfs/D2_44K_16bit_256tap_FIR_SOFA.sofa'
+    [basepath,'/hrtfs/FABIAN_HRIR_measured_HATO_0.sofa']
+    [basepath,'/hrtfs/HRIR_L2702.sofa']
 };
 labels = { % put here the names for the legend
     'FABIAN'
-    'KEMAR'
+    'KU100'
 };
 n = numel(filenames);
 nplotsH = 2; % number of plots in horizontal
