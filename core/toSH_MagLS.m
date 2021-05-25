@@ -57,8 +57,9 @@ f = linspace(0,fs/2,nfreqs).'; % frequency vector
 
 %% Get the order-truncated SH-HRTF
 Y = AKsh(N, [], az*180/pi, el*180/pi, 'real').'; 
-if ~exist('w','var') || ~isempty(w)
-    Y_inv = 4*pi*w.*Y'; % if integrations weights are provided, use them
+if exist('w','var') && ~isempty(w)
+%     Y_inv = 4*pi*w.*Y'; % if integrations weights are provided, use them
+    Y_inv = mult2(4*pi*w,Y'); % use integrations weights if provided
 else
     Y_inv = pinv(Y); % if not, the pseudoinverse will do just fine
 end

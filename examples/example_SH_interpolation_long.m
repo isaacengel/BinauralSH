@@ -152,7 +152,7 @@ else
     results.pd = (-unwrap(angle(H(:,indLeb,1)))+unwrap(angle(H(:,indLeb,2))))./(2*pi*f)*1e6;
     % Loudness across directions
     [L,wERB,calibrationGain] = perceptualSpectrum(H,fs);
-    Lavgd = sum(L.*wERB,1); % ERB-weighted avg loudness per direction
+    Lavgd = sum(mult2(L,wERB),1); % ERB-weighted avg loudness per direction
     results.L = Lavgd;
     results.L_perDirection = L; % save to calculate PSD
     results.Lavg = sum(Lavgd(:,indLeb,:).*wLeb.',2); % weighted avg on the Lebedev grid
@@ -437,7 +437,7 @@ semilogx([f(2) 20000], [20 20],'k:')
 ylim([0 300])
 xlim([f(2) 20000]), grid on, ylabel('Error (\mus)')
 xticks([100,1000,10000,20000])
-xticklabels(["100","1k","10k","20k"])    
+xticklabels({'100','1k','10k','20k'})    
 xlabel('f (Hz)')
 axpos = get(ha(2),'pos');
 annotation(fig2,'textbox',...
@@ -536,7 +536,7 @@ semilogx([f(2) 20000], [20 20],'k:')
 ylim([0 300])
 xlim([f(2) 20000]), grid on, ylabel('Error (\mus)')
 xticks([100,1000,10000,20000])
-xticklabels(["100","1k","10k","20k"])    
+xticklabels({'100','1k','10k','20k'})  
 xlabel('f (Hz)')
 axpos = get(ha(2),'pos');
 annotation(fig2,'textbox',...
@@ -622,7 +622,7 @@ for i=1:n % multiply by 0.001 to have it in ms (cleaner plot)
 
 end
 set(gca,'ThetaZeroLocation','top','ThetaLim',[0 360],'fontsize',7)
-set(gca,'ThetaTick',[0:45:360],'ThetaTickLabel',["0","45","90","135","","-135","-90","-45"],'RAxisLocation',-90)
+set(gca,'ThetaTick',[0:45:360],'ThetaTickLabel',{'0','45','90','135','','-135','-90','-45'},'RAxisLocation',-90)
 title('ITD (ms)')
 
 % ILD
@@ -642,7 +642,7 @@ for i=1:n
     polarplot(azHP,abs(ild(:,i)),'Color',color,'LineWidth',lw,'LineStyle',ls,'Marker',m,'MarkerSize',ms,'MarkerIndices',mi), hold on
 end
 set(gca,'ThetaZeroLocation','top','ThetaLim',[0 360],'fontsize',7)
-set(gca,'ThetaTick',[0:45:360],'ThetaTickLabel',["0","45","90","135","","-135","-90","-45"],'RAxisLocation',-90)
+set(gca,'ThetaTick',[0:45:360],'ThetaTickLabel',{'0','45','90','135','','-135','-90','-45'},'RAxisLocation',-90)
 title('ILD (dB)')
 
 legend(labels,'position',[0.4646    0.6219    0.1135    0.1883]);
@@ -735,7 +735,7 @@ for i=1:n % multiply by 0.001 to have it in ms (cleaner plot)
 
 end
 set(gca,'ThetaZeroLocation','top','ThetaLim',[0 360],'fontsize',7)
-set(gca,'ThetaTick',[0:45:360],'ThetaTickLabel',["0","45","90","135","","-135","-90","-45"],'RAxisLocation',-90)
+set(gca,'ThetaTick',[0:45:360],'ThetaTickLabel',{'0','45','90','135','','-135','-90','-45'},'RAxisLocation',-90)
 title('ITD (ms)')
 
 % ILD
@@ -755,7 +755,7 @@ for i=1:n
     polarplot(azHP,abs(ild(:,i)),'Color',color,'LineWidth',lw,'LineStyle',ls,'Marker',m,'MarkerSize',ms,'MarkerIndices',mi), hold on
 end
 set(gca,'ThetaZeroLocation','top','ThetaLim',[0 360],'fontsize',7)
-set(gca,'ThetaTick',[0:45:360],'ThetaTickLabel',["0","45","90","135","","-135","-90","-45"],'RAxisLocation',-90)
+set(gca,'ThetaTick',[0:45:360],'ThetaTickLabel',{'0','45','90','135','','-135','-90','-45'},'RAxisLocation',-90)
 title('ILD (dB)')
 
 legend(labels,'position',[0.4646    0.6219    0.1135    0.1883]);

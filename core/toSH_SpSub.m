@@ -36,8 +36,9 @@ end
 %% Process
 % First, get the SH-HRTF with highest available order
 Ymax = AKsh(Nmax, [], az*180/pi, el*180/pi, 'real').'; % SH coeffs
-if ~exist('w','var') || ~isempty(w)
-    Ymax_inv = 4*pi*w.*Ymax'; % if integrations weights are provided, use them
+if exist('w','var') && ~isempty(w)
+%     Ymax_inv = 4*pi*w.*Ymax'; % if integrations weights are provided, use them
+    Ymax_inv = mult2(4*pi*w,Ymax'); % use integrations weights if provided
 else
     Ymax_inv = pinv(Ymax); % if not, the pseudoinverse will do just fine
 end
@@ -50,6 +51,7 @@ Hs = mult3(Hnm_max,Ymax_s); % = cat(3,Hnm_max(:,:,1)*Ymax_s,Hnm_max(:,:,2)*Ymax_
 
 % Finally, convert to SH again at the target low order
 Ys = AKsh(N, [], sgrid(:,1)*180/pi, sgrid(:,2)*180/pi, 'real').';
-Ys_inv = 4*pi*diag(sgrid(:,3))*Ys'; 
+% Ys_inv = 4*pi*diag(sgrid(:,3))*Ys'; 
+Ys_inv = mult2(4*pi*sgrid(:,3),Ys');
 Hnm = mult3(Hs,Ys_inv);
  

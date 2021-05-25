@@ -61,7 +61,7 @@ ecumdb = 10*log10(ecum);
 
 % warp to log scale if indicated
 if logscale
-    fvec = logspace(log10(f(2)),log10(f(end)),2048); % f vector (log scale)
+    fvec = logspace(log10(f(2)),log10(f(end)),nfreq); % f vector (log scale)
     edb = interp1(f,edb,fvec,'spline');
     ecumdb = interp1(f,ecumdb,fvec,'spline');
 else
@@ -106,11 +106,11 @@ for ch = 1:nch
     if logscale
         set(gca,'XScale','log')
         xticks([100,1000,10000,20000])
-        xticklabels(['100','1k','10k','20k'])    
+        xticklabels({'100','1k','10k','20k'})    
         xlabel('f (Hz)')
     else    
-%        xticks([1000,10000,20000])
-%        xticklabels(['1','10','20'])
+        xticks([1000,10000,20000])
+        xticklabels({'1','10','20'})
         set(gca,'XScale','lin')
         xlabel('f (kHz)')
     end
@@ -123,11 +123,11 @@ for ch = 1:nch
     % Find b90 and b99
     b90 = 0;
     b99 = 0;
-    for ii = 1:size(ecum, 2)
     %b90 = sum(~(ecum(:,:,ch) > 0.9*ecum(:,end,ch)),2);
-    b90 = b90 + ~(ecum(:,ii,ch) > 0.9*ecum(:,end,ch));
     %b99 = sum(~(ecum(:,:,ch) > 0.99*ecum(:,end,ch)),2);
-    b99 = b99 + ~(ecum(:,ii,ch) > 0.99*ecum(:,end,ch));
+    for ii = 1:size(ecum, 2) % for compatibility with Matlab 2016
+        b90 = b90 + ~(ecum(:,ii,ch) > 0.9*ecum(:,end,ch));
+        b99 = b99 + ~(ecum(:,ii,ch) > 0.99*ecum(:,end,ch));
     end
     % Plot them
     hold on

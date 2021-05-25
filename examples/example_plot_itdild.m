@@ -91,10 +91,10 @@ end
 %% Change some plot settings
 set(pha{1},'ThetaZeroLocation','top','ThetaLim',[0 360],'fontsize',7)
 set(pha{1},'ThetaTick',[0:45:360],...
-    'ThetaTickLabel',["0","45","90","135","","-135","-90","-45"],...
+    'ThetaTickLabel',{'0','45','90','135','','-135','-90','-45'},...
     'RAxisLocation',-90)
 title(pha{1},'ITD (ms)')
 set(pha{2},'ThetaZeroLocation','top','ThetaLim',[0 360],'fontsize',7)
-set(pha{2},'ThetaTick',[0:45:360],'ThetaTickLabel',["0","45","90","135","","-135","-90","-45"],'RAxisLocation',-90)
+set(pha{2},'ThetaTick',[0:45:360],'ThetaTickLabel',{'0','45','90','135','','-135','-90','-45'},'RAxisLocation',-90)
 title(pha{2},'ILD (dB)')
 legend(labels,'position',[0.7986    0.3869    0.1991    0.2839]); % change size as appropriate

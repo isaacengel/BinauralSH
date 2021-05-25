@@ -47,15 +47,17 @@ if isempty(calibrationGain)
     % If a calibration value was not provided, normalize signal so the
     % average dB level at 1kHz is phonLvl (default = 60 dB SPL)
     [~,ind1khz] = min(abs(f-1000)); % find index for f=1kHz
-    Xm = Xdb(ind1khz,:,:);
-    spl1khz = mean(Xm(:));
     %spl1khz = mean(Xdb(ind1khz,:,:),'all'); % average dB level at 1kHz
+    Xm = Xdb(ind1khz,:,:); % for compatibility with Matlab 2016
+    spl1khz = mean(Xm(:)); % for compatibility with Matlab 2016
     calibrationGain = -spl1khz + phonLvl; % in dB
 end
 XdbSPL = Xdb + calibrationGain;
 
 % Scale signals according to the contour (convert dB to phons)
-Xphon = XdbSPL+repmat(splToPhon, 1, size(XdbSPL, 2), size(XdbSPL, 3)); 
+% Xphon = XdbSPL+splToPhon; 
+Xphon = XdbSPL+repmat(splToPhon, 1, size(XdbSPL, 2), size(XdbSPL, 3)); %
+% for compatibility with Matlab 2016
 
 % Convert phons to sones
 Xson = 2.^((Xphon-40)/10);

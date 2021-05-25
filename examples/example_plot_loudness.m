@@ -49,7 +49,7 @@ for i=1:n
     
     % Calculate loudness per direction
     [L,wERB] = perceptualSpectrum(H,fs);
-    Lavgd = sum(L.*wERB,1); % ERB-weighted avg loudness per direction
+    Lavgd = sum(mult2(L,wERB),1); % ERB-weighted avg loudness per direction
 
     axes(ha(i))
     plotSph(az,el,Lavgd(:,:,1)) % plot left ear only
