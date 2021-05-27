@@ -104,14 +104,12 @@ for ch = 1:nch
 
     xlim([0 20000]) % 100
     if logscale
-        set(gca,'XScale','log')
-        xticks([100,1000,10000,20000])
-        xticklabels({'100','1k','10k','20k'})    
+        set(gca,'XScale','log','XTick',[100,1000,10000,20000],...
+            'XTickLabel',{'100','1k','10k','20k'})
         xlabel('f (Hz)')
-    else    
-        xticks([1000,10000,20000])
-        xticklabels({'1','10','20'})
-        set(gca,'XScale','lin')
+    else
+        set(gca,'XScale','lin','XTick',[1000,10000,20000],...
+            'XTickLabel',{'1','10','20'})
         xlabel('f (kHz)')
     end
     set(gca,'YDir','normal')
