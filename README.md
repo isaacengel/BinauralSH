@@ -3,6 +3,8 @@ Another Matlab library for spherical harmonic manipulation of HRTFs and binaural
 
 For examples, check https://github.com/isaacengel/BinauralSH-Examples
 
+Also, check the script ```exp_engel2021``` in the Auditory Modeling Toolbox https://amtoolbox.org/
+
 # Citation
 To cite this repository, please use:
 ```
