@@ -176,7 +176,7 @@ dualBand = p.Results.dualBand;
 tapering = p.Results.tapering;
 Hnm_ref = p.Results.Hnm_ref;
 
-if isempty(fc) && ~strcmpi(mode,'BiMagLS')
+if isempty(fc) && ~contains(mode,'BiMagLS','IgnoreCase',1)
     fc = N*c/(2*pi*r); % if fc not provided, use aliasing frequency
 end
 
