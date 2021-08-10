@@ -9,4 +9,4 @@ function versionnumber = binauralSH_version()
 
 %% ===== Configuration ===================================================
 % Version number
-versionnumber = '0.2';
+versionnumber = '0.3';
