@@ -1,4 +1,6 @@
-function [Hnm,fc] = toSH_MagLS(H,N,az,el,fs,w,fc,k,r)
+function [Hnm,fc] = toSH_MagLS_old(H,N,az,el,fs,w,fc,frac,r)
+%OLD VERSION WITH SLIGHLTY DIFFERENT SMOOTHING AND frac PARAMETER. KEPT TO
+%REPRODUCE OLD EXPERIMENTS.
 % Transform HRTF to SH domain at order N with the MagLS method [1],
 % following the simplified approach from [2] sec. 4.11.2 and 4.11.3. The
 % main difference of this implementation vs [1] is that the phase is
@@ -20,10 +22,10 @@ function [Hnm,fc] = toSH_MagLS(H,N,az,el,fs,w,fc,k,r)
 %   w = quadrature weights (ndirs x 1); if empty, use pseudoinverse
 %   fc = cutoff frequency in Hz above which phase is "disregarded" in
 %       favour of magnitude; if empty (default), use aliasing frequency
-%   k = length of the transition band in octaves (def=1). E.g.
-%       if fc=623.89 Hz, smooth between 349.65 and 882.31 Hz. If k==0, 
-%       don't smooth.
-%   r = head radius in m (def=0.0875)
+%   frac = half-length of the transition band in fractions of octave
+%       (def=2). E.g. if fc=623.89 Hz, smooth between 349.65 and 882.31 Hz.
+%       If frac==0, don't smooth.
+%   r = head radius in m (def=0.085)
 %   
 % OUTPUT:
 %   Hnm = HRTF's SH coefficients (nfreqs x (N+1)^2 x 2 ears)
@@ -43,19 +45,19 @@ function [Hnm,fc] = toSH_MagLS(H,N,az,el,fs,w,fc,k,r)
 
 %% Some parameters
 if ~exist('r','var') || isempty(r)
-    r = 0.0875; % default head radius
+    r = 0.085; % default head radius
 end
 if ~exist('fc','var') || isempty(fc)
     c = 343; % speed of sound (m/s)
     fc = N*c/(2*pi*r); % if fc not provided, use aliasing frequency
 end
-if ~exist('k','var') || isempty(k)
-    k = 1; % default smoothing = one octave (half to each side)
+if ~exist('frac','var') || isempty(frac)
+    frac = 2; % default smoothing = half octave
 end
 nfreqs = size(H,1);
 f = linspace(0,fs/2,nfreqs).'; % frequency vector
 
-%% Get the SH matrices
+%% Get the order-truncated SH-HRTF
 Y = AKsh(N, [], az*180/pi, el*180/pi, 'real').'; 
 if exist('w','var') && ~isempty(w)
 %     Y_inv = 4*pi*w.*Y'; % if integrations weights are provided, use them
@@ -63,6 +65,7 @@ if exist('w','var') && ~isempty(w)
 else
     Y_inv = pinv(Y); % if not, the pseudoinverse will do just fine
 end
+Hnm = mult3(H,Y_inv); % SH coeffs up to N
 
 %% Apply simplified MagLS from [2] sec.4.11.2
 
@@ -72,40 +75,35 @@ end
 % purposes.
 
 % Smooth transition parameters
-fc1 = fc*2^(-k/2); % smoothing starts k/2 octaves before fc
-fc2 = fc*2^(k/2); % smoothing ends k/2 octaves after fc
-fc1_ind = find(f>fc1,1,'first'); % nearest available frequency
-fc2_ind = find(f<fc2,1,'last'); % nearest available frequency
-range1 = 1:fc1_ind-1; % first interval, below the cutoff (SFT)
-range2 = fc1_ind:fc2_ind; % second interval (smooth transition)
-range3 = fc2_ind+1:nfreqs; % third interval, above the cutoff (MagLS)
-
-% Allocate space
-Hnm = zeros(nfreqs,(N+1)^2,2); 
-
-% Below the low cutoff, calculate SH coefficients via SFT
-Hnm(range1,:,:) = mult3(H(range1,:,:),Y_inv);
-
-% In the transition interval, calculate both ways and do weighted average
-for fi=range2
-    % First, calculate via SFT
-    Hnm_sft = mult3(H(fi,:,:),Y_inv);
-    % Second, calculate via MagLS
-    Hprev = mult3(Hnm(fi-1,:,:),Y); % estimated HRTF for previous fi
-    mag = abs(H(fi,:,:)); % magnitude of actual HRTF
-    phase = angle(Hprev); % phase of previous fi
-    Htarg = mag.*exp(1i*phase); % MagLS target HRTF
-    Hnm_mls = mult3(Htarg,Y_inv); % MagLS estimation of the SH-HRTF
-    % Finally, do a weighted average of both
-    alpha = 0.5 + k/log(2) * log(f(fi)/fc); % 0 for fc1, 1 for fc2
-    Hnm(fi,:,:) = alpha*Hnm_mls + (1-alpha)*Hnm_sft;
+if frac ~= 0
+    % Option 1: fc is at the middle of the transition band
+    fc1 = fc*2^(-1/frac); % smoothing starts 1/frac octaves before fc
+    fc2 = fc*2^(1/frac); % smoothing ends 1/frac octaves after fc
+    % Option 2: fc is at the end of the transition band
+%     fc1 = fc*2^(-1/(2*frac));
+%     fc2 = fc;
+    % Look for nearest available frequencies
+    fc1_ind = find(f>fc1,1,'first'); 
+    fc2_ind = find(f<fc2,1,'last');
+    fc1 = f(fc1_ind);
+    fc2 = f(fc2_ind);
+    % Define frequency and weight vector
+    fcvec_log = logspace(log10(fc1),log10(fc2),100); % f vector (log scale)
+    sw_log = linspace(0,1,100); % transition weights (log scale)
+    fcvec = f(fc1_ind:fc2_ind); % f vector (lin scale)
+    sw = interp1(fcvec_log,sw_log,fcvec,'spline'); % weights (lin scale)
+    sw = [zeros(fc1_ind-1,1);sw(:);ones(nfreqs-fc2_ind,1)]; % for all freqs
+else
+    sw = ones(nfreqs,1);
+    fc1_ind = find(f>fc,1,'first');
 end
 
-% Above the high cutoff, calculate SH coefficients via MagLS
-for fi=range3
-    Hprev = mult3(Hnm(fi-1,:,:),Y); % estimated HRTF for previous fi
+for fi=fc1_ind:nfreqs % for frequencies above the cutoff
+    prevH = mult3(Hnm(fi-1,:,:),Y); % previous fi estimated HRTF
     mag = abs(H(fi,:,:)); % magnitude of actual HRTF
-    phase = angle(Hprev); % phase of previous fi
-    Htarg = mag.*exp(1i*phase); % MagLS target HRTF
-    Hnm(fi,:,:) = mult3(Htarg,Y_inv); % MagLS estimation of the SH-HRTF
+    phase = angle(prevH); % phase of previous fi
+    currH = mag.*exp(1i*phase); % current fi estimated HRTF
+    newHnm = mult3(currH,Y_inv); % magLS estimation of the SH-HRTF
+    Hnm(fi,:,:) = sw(fi)*newHnm + (1-sw(fi))*Hnm(fi,:,:); % smoothing
 end
+

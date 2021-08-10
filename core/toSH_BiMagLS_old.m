@@ -1,4 +1,6 @@
-function [Hnm,fc,p] = toSH_BiMagLS(H,N,az,el,fs,w,fc,k,r,earAz,earEl)
+function [Hnm,fc,p] = toSH_BiMagLS_old(H,N,az,el,fs,w,fc,frac,r,earAz,earEl)
+%OLD VERSION WITH SLIGHLTY DIFFERENT SMOOTHING AND frac PARAMETER. KEPT TO
+%REPRODUCE OLD EXPERIMENTS.
 % Transform HRTF to SH domain at order N by using ear aligning first [1]
 % and frequency-dependent optimisation above a certain cutoff frequency
 % (MagLS [2,3]). The idea is to align the HRIRs first to reduce the
@@ -24,9 +26,9 @@ function [Hnm,fc,p] = toSH_BiMagLS(H,N,az,el,fs,w,fc,k,r,earAz,earEl)
 %   w = quadrature weights (ndirs x 1); if empty, use pseudoinverse
 %   fc = cutoff frequency in Hz above which phase is "disregarded" in
 %        favour of magnitude; if empty (default), use aliasing frequency
-%   k = length of the transition band in octaves (def=1). E.g.
-%       if fc=623.89 Hz, smooth between 349.65 and 882.31 Hz. If k==0, 
-%       don't smooth.
+%   frac = half-length of the transition band in fractions of octave
+%       (def=2). E.g. if fc=623.89 Hz, smooth between 349.65 and 882.31 Hz.
+%       If frac==0, don't smooth.
 %   r = head radius in m (def=0.0875)
 %   earAz = left/right ear azimuth (1 x 2) in rad (def=[pi/2, 3*pi/2])
 %   earEl = left/right ear elevation (1 x 2) in rad (def = [pi/2, pi/2])
@@ -62,8 +64,8 @@ if ~exist('fc','var') || isempty(fc)
     fa = N*c/(2*pi*r); % aliasing frequency
     fc = max(3000,fa); % if fc not provided, use max of fa and 3kHz
 end
-if ~exist('k','var') || isempty(k)
-    k = 1;
+if ~exist('frac','var') || isempty(frac)
+    frac = 2;
 end
 if ~exist('earAz','var') || isempty(earAz)
     earAz = [pi/2, 3*pi/2];
@@ -83,5 +85,5 @@ p = earAlign(kr,az,el,earAz,earEl);
 H = H.*exp(-1i*p); % apply correction
 
 %% Then, apply MagLS
-[Hnm,fc] = toSH_MagLS(H,N,az,el,fs,w,fc,k,r);
+[Hnm,fc] = toSH_MagLS_old(H,N,az,el,fs,w,fc,frac,r);
 

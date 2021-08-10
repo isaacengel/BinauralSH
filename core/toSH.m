@@ -53,9 +53,9 @@ function [hnm,fs,varOut] = toSH(h,N,varargin)
 %       constraint (def=false).
 %   fadeIn = fade-in length in samples to apply to the output (def=0)
 %   fadeOut = fade-out length in samples to apply to the output (def=0)
-%   frac = half-length of the MagLS transition band (def=2 -> 1/2 octave).
-%       E.g. if fc=623.89 Hz, smooth between 349.65 and 882.31 Hz. If
-%       frac==0, don't smooth.
+%   k = length of the transition band in octaves (def=1). E.g.
+%       if fc=623.89 Hz, smooth between 349.65 and 882.31 Hz. If k==0, 
+%       don't smooth.
 %   tapering = apply weights to high SH orders to reduce side lobes:
 %       0 = off (default)
 %       1 = original Hann weights from Hold et al (2019)
@@ -148,7 +148,7 @@ addParameter(p,'Nmax',35,@isscalar)
 addParameter(p,'covConstPlots',false,@isscalar) 
 addParameter(p,'fadeIn',0,@isscalar);
 addParameter(p,'fadeOut',0,@isscalar);
-addParameter(p,'frac',2,@isscalar);
+addParameter(p,'k',1,@isscalar);
 addParameter(p,'dualBand',false,@isscalar)
 addParameter(p,'tapering',0,@isscalar)
 addParameter(p,'Hnm_ref',[])
@@ -171,7 +171,7 @@ Nmax = p.Results.Nmax;
 covConstPlots = p.Results.covConstPlots;
 fadeIn = p.Results.fadeIn;
 fadeOut = p.Results.fadeOut;
-frac = p.Results.frac;
+k = p.Results.k;
 dualBand = p.Results.dualBand;
 tapering = p.Results.tapering;
 Hnm_ref = p.Results.Hnm_ref;
@@ -278,7 +278,13 @@ elseif strcmpi(mode,'MagLS') % magnitude least squares
     if fc>=fs/2
         warning('fc (%0.2f Hz) >= fs/2 (%0.2f Hz). MagLS preprocessing has no effect...',fc,fs/2)
     end
-    [Hnm,varOut.fc] = toSH_MagLS(H,N,az,el,fs,w,fc,frac,r);
+    [Hnm,varOut.fc] = toSH_MagLS(H,N,az,el,fs,w,fc,k,r);
+    
+elseif strcmpi(mode,'MagLSold') % old smoothing, kept to reproduce old data
+    if fc>=fs/2
+        warning('fc (%0.2f Hz) >= fs/2 (%0.2f Hz). MagLS preprocessing has no effect...',fc,fs/2)
+    end
+    [Hnm,varOut.fc] = toSH_MagLS_old(H,N,az,el,fs,w,fc,k,r);
 
 elseif strcmpi(mode,'TA') % time alignment (ear alignment)
     Hnm = toSH_TA(H,N,az,el,fs,w,r,earAz,earEl);
@@ -287,8 +293,14 @@ elseif strcmpi(mode,'BiMagLS') % ear alignment + MagLS
     if fc>=fs/2
         warning('fc (%0.2f Hz) >= fs/2 (%0.2f Hz). BiMagLS preprocessing has no effect...',fc,fs/2)
     end
-    [Hnm,varOut.fc] = toSH_BiMagLS(H,N,az,el,fs,w,fc,frac,r,earAz,earEl);
-        
+    [Hnm,varOut.fc] = toSH_BiMagLS(H,N,az,el,fs,w,fc,k,r,earAz,earEl);
+
+elseif strcmpi(mode,'BiMagLSold') % old smoothing, kept to reproduce old data
+    if fc>=fs/2
+        warning('fc (%0.2f Hz) >= fs/2 (%0.2f Hz). BiMagLS preprocessing has no effect...',fc,fs/2)
+    end
+    [Hnm,varOut.fc] = toSH_BiMagLS_old(H,N,az,el,fs,w,fc,k,r,earAz,earEl);
+
 elseif strcmpi(mode,'SpSubMod') % FDTA + SpSub
     if fc>=fs/2
         warning('fc (%0.2f Hz) >= fs/2 (%0.2f Hz). SpSubMod preprocessing is the same as SpSub...',fc,fs/2)
