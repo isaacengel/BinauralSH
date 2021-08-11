@@ -372,7 +372,11 @@ function violins = violinplot(data, cats, varargin)
     elseif ismatrix(data)
         for n=1:size(data, 2)
             thisData = data(:, n);
-            violins(n) = Violin(thisData, n, varargin{:});
+            if ~isempty(colors)
+                violins(n) = Violin(thisData, n, varargin{:},'ViolinColor',colors(n,:));
+            else
+                violins(n) = Violin(thisData, n, varargin{:});
+            end
         end
         xlim([0.5 size(data, 2)+0.5]);
         set(gca, 'xtick', 1:size(data, 2));
