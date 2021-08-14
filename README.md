@@ -9,7 +9,7 @@ Also, check the script ```exp_engel2021``` in the Auditory Modeling Toolbox http
 To cite this repository, please use:
 ```
 Engel, Isaac, "BinauralSH library for Matlab", 2021. Available at: https://github.com/isaacengel/BinauralSH.
-DOI: 10.5281/zenodo.5012460
+DOI: 10.5281/zenodo.5201782
 ```
 
 
