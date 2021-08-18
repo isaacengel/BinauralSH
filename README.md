@@ -1,7 +1,7 @@
 # BinauralSH
 Another Matlab library for spherical harmonic manipulation of HRTFs and binaural rendering. Still in construction!
 
-For examples, check https://github.com/isaacengel/BinauralSH-Examples
+For examples (e.g. evaluation of BiMagLS method from our paper in DAGA 2021), check https://github.com/isaacengel/BinauralSH-Examples
 
 Also, check the script ```exp_engel2021``` in the Auditory Modeling Toolbox https://amtoolbox.org/
 
