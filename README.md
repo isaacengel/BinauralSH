@@ -6,8 +6,9 @@ For examples (e.g. evaluation of BiMagLS method [1]), check https://github.com/i
 This library is now featured in the Auditory Modeling Toolbox! Check the script ```exp_engel2021``` after downloading the code from https://amtoolbox.org/
 
 # Citation
-To cite this repository, please use:
+To cite this repository, please use the following two citations:
 ```
+Engel, Isaac, Goodman, Dan. F. M., and Picinali, Lorenzo, "Assessing HRTF preprocessing methods for Ambisonics rendering through perceptual models", 2021. Submitted to Acta Acustica.
 Engel, Isaac, "BinauralSH library for Matlab", 2021. Available at: https://github.com/isaacengel/BinauralSH.
 DOI: 10.5281/zenodo.5201782
 ```
