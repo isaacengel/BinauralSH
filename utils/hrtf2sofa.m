@@ -45,3 +45,4 @@ SOFA_obj.API.Dimensions.Data.IR = 'MRN'; % time-measurements-receivers
 SOFA_obj.GLOBAL_SOFAConventions = 'SimpleFreeFieldHRIR';
 SOFA_obj.GLOBAL_RoomType = 'free field';
 SOFA_obj.GLOBAL_Comment = 'Generated with ''hrtf2sofa()'' from an HRIR';
+SOFA_obj.GLOBAL_Title = 'HRTF';

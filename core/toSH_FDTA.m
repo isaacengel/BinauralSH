@@ -1,4 +1,4 @@
-function [Hnm,fc] = toSH_FDTA(H,N,az,el,fs,w,fc,r,earAz,earEl)
+function [Hnm,fc] = toSH_FDTA(H,N,az,el,fs,w,fc,r,earAz,earEl,reg_eps)
 % Transform HRTF to SH domain at order N using frequency-dependent 
 % time-alignment [1]. Alignment is performed with the method in [2].
 %
@@ -60,12 +60,6 @@ ind = fc_ind:nfreqs;
 H(ind,:,:) = H(ind,:,:).*exp(-1i*p(ind,:,:)); % apply correction
 
 %% Then, get the order-truncated SH-HRTF
-Y = AKsh(N,[],az*180/pi,el*180/pi,'real').';
-if exist('w','var') && ~isempty(w)
-%     Y_inv = 4*pi*w.*Y'; % if integrations weights are provided, use them
-    Y_inv = mult2(4*pi*w,Y'); % use integrations weights if provided
-else
-    Y_inv = pinv(Y); % if not, the pseudoinverse will do just fine
-end
+Y_inv = getYinv(N,az,el,w,reg_eps);
 Hnm = mult3(H,Y_inv);
 

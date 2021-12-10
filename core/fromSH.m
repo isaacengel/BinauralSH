@@ -39,7 +39,7 @@ k = 2*pi*f.'/c; % wave number
 kr = k*r;
 
 %% Process
-Y = AKsh(N, [], az*180/pi, el*180/pi, 'real').'; % SH coefficients
+Y = getRealSHmatrix(N,az,el); % SH coefficients
 Hnm = ffth(hnm,nfft,1); % to frequency domain
 H = mult3(Hnm,Y); % interpolate
 if isaligned % re-align if specified

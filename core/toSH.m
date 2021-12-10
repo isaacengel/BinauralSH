@@ -65,6 +65,8 @@ function [hnm,fs,varOut] = toSH(h,N,varargin)
 %   dualBand = whether to use dual-band tapering (def=false)
 %   Hnm_ref = precomputed high-order Hnm used to calculate diffuse field
 %       EQ. To speed things up if processing many HRTFs
+%   reg_eps = epsilon used for Tikhonov regularisation according to [12]
+%       (def=0=don't regularise)
 %
 % OUTPUTS:
 %   hnm = HRIRs' SH coefficients (nfftOut x (N+1)^2 x 2 ears)
@@ -119,15 +121,13 @@ function [hnm,fs,varOut] = toSH(h,N,varargin)
 %   [11] Archontis Politis, Microphone array processing for parametric
 %       spatial audio techniques, 2016 Doctoral Dissertation, Department of
 %       Signal Processing and Acoustics, Aalto University, Finland.
+%   [12] Duraiswaini, R., Dmitry N. Zotkin, and Nail A. Gumerov.
+%       "Interpolation and range extrapolation of HRTFs." 2004 IEEE 
+%       International Conference on Acoustics, Speech, and Signal
+%       Processing. Vol. 4. IEEE, 2004.
 %
 % AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
-
-% TODO: implement Tikhonov regularization for irregular grids
-% According to Duraiswami 2004, it goes like this:
-% reg_eps = 1e-6; % epsilon
-% D = (1 + N*(N+1)) * eye((N+1)^2); % Tikhonov regularization matrix
-% Y_inv = Y' * (Y * Y' + reg_eps*D)^(-1); % this instead of pseudoinverse
 
 %% Parse inputs
 p = inputParser;
@@ -152,6 +152,7 @@ addParameter(p,'k',1,@isscalar);
 addParameter(p,'dualBand',false,@isscalar)
 addParameter(p,'tapering',0,@isscalar)
 addParameter(p,'Hnm_ref',[])
+addParameter(p,'reg_eps',0,@isscalar)
 
 parse(p,varargin{:})
 mode = p.Results.mode;
@@ -175,6 +176,7 @@ k = p.Results.k;
 dualBand = p.Results.dualBand;
 tapering = p.Results.tapering;
 Hnm_ref = p.Results.Hnm_ref;
+reg_eps = p.Results.reg_eps;
 
 if isempty(fc) && ~contains(mode,'BiMagLS','IgnoreCase',1)
     fc = N*c/(2*pi*r); % if fc not provided, use aliasing frequency
@@ -226,15 +228,9 @@ w = w(:);
 alignOption = 1; % 1=phase delay, 2=onset detection, 0=nothing
 if alignOption == 1 % Option 1: phase delay 
     H = ffth(h,nfft,1); % to frequency domain
-    Y0 = AKsh(0, [], az*180/pi, el*180/pi, 'real').';
-    if ~isempty(w)
-%         Y0_inv = 4*pi*w.*Y0'; % if integrations weights are provided, use them
-        Y0_inv = mult2(4*pi*w,Y0'); % use integrations weights if provided
-    else
-        Y0_inv = pinv(Y0); % if not, the pseudoinverse will do just fine
-    end
+    Y0_inv = getYinv(0,az,el,w,reg_eps);
     H0 = mult3(H,Y0_inv); % 0th order SH signal 
-%     pd = -unwrap(angle(H0(2:end,1,:)))./(2*pi*f(2:end)); % phase delay in s
+%     pd = -unwrap(angle(H0(2:end,1,:)))./(2*pi*f(2:end)); % phase delay
 %     pd_mean = mean(pd,'all'); % avg delay
 %     H = H.*exp(1i*2*pi*f*pd_mean); % subtract delay
     pd = div2(-unwrap(angle(H0(2:end,1,:))),(2*pi*f(2:end))); % phase delay
@@ -244,7 +240,6 @@ elseif alignOption == 2 % Option 2: onset detection
     onsL = AKonsetDetect(h(:,:,1)); % left ear onsets
     onsR = AKonsetDetect(h(:,:,2)); % right rear onsets
     ons = min([onsL;onsR]); % ipsilateral ear onsets
-    %     nshift = -floor(min(ons))); % detect earliest onset
     nshift = -round(median(ons)); % median onset
     h = circshift(h,nshift);
     H = ffth(h,nfft,1);
@@ -255,30 +250,30 @@ end
 %% Preprocess using the indicated method
 
 if strcmpi(mode,'Trunc') % just order truncation
-    % Order-truncated SH-HRTF (faster than order Nmax + truncation)
-    Y = AKsh(N,[],az*180/pi,el*180/pi,'real').';
-    if ~isempty(w)
-%         Y_inv = 4*pi*w.*Y'; % use integrations weights if provided
-        Y_inv = mult2(4*pi*w,Y'); % use integrations weights if provided
-    else
-        Y_inv = pinv(Y); % if not, pseudoinverse will do just fine
-    end
+    % Order-truncated SH-HRTF (faster than order Nmax + truncation)  
+    Y_inv = getYinv(N,az,el,w,reg_eps);
     Hnm = mult3(H,Y_inv);
 
 elseif strcmpi(mode,'SpSub') % subsampling aka virtual loudspeaker
-    Hnm = toSH_SpSub(H,N,az,el,w,Nmax);
+    Hnm = toSH_SpSub(H,N,az,el,w,Nmax,reg_eps);
 
 elseif strcmpi(mode,'FDTA') % frequency-dependent time-alignment
     if fc>=fs/2
         warning('fc (%0.2f Hz) >= fs/2 (%0.2f Hz). FDTA preprocessing has no effect...',fc,fs/2)
     end
-    [Hnm,varOut.fc] = toSH_FDTA(H,N,az,el,fs,w,fc,r,earAz,earEl);
+    [Hnm,varOut.fc] = toSH_FDTA(H,N,az,el,fs,w,fc,r,earAz,earEl,reg_eps);
 
 elseif strcmpi(mode,'MagLS') % magnitude least squares
     if fc>=fs/2
         warning('fc (%0.2f Hz) >= fs/2 (%0.2f Hz). MagLS preprocessing has no effect...',fc,fs/2)
     end
-    [Hnm,varOut.fc] = toSH_MagLS(H,N,az,el,fs,w,fc,k,r);
+    [Hnm,varOut.fc] = toSH_MagLS(H,N,az,el,fs,w,fc,k,r,reg_eps);
+
+elseif strcmpi(mode,'MagSun') % magnitude optimisation by Sun
+    if fc>=fs/2
+        warning('fc (%0.2f Hz) >= fs/2 (%0.2f Hz). MagSun preprocessing has no effect...',fc,fs/2)
+    end
+    [Hnm,varOut.fc] = toSH_MagSun(H,N,az,el,fs,w,fc,k,r,reg_eps);
     
 elseif strcmpi(mode,'MagLSold') % old smoothing, kept to reproduce old data
     if fc>=fs/2
@@ -287,13 +282,13 @@ elseif strcmpi(mode,'MagLSold') % old smoothing, kept to reproduce old data
     [Hnm,varOut.fc] = toSH_MagLS_old(H,N,az,el,fs,w,fc,k,r);
 
 elseif strcmpi(mode,'TA') % time alignment (ear alignment)
-    Hnm = toSH_TA(H,N,az,el,fs,w,r,earAz,earEl);
+    Hnm = toSH_TA(H,N,az,el,fs,w,r,earAz,earEl,reg_eps);
 
 elseif strcmpi(mode,'BiMagLS') % ear alignment + MagLS
     if fc>=fs/2
         warning('fc (%0.2f Hz) >= fs/2 (%0.2f Hz). BiMagLS preprocessing has no effect...',fc,fs/2)
     end
-    [Hnm,varOut.fc] = toSH_BiMagLS(H,N,az,el,fs,w,fc,k,r,earAz,earEl);
+    [Hnm,varOut.fc] = toSH_BiMagLS(H,N,az,el,fs,w,fc,k,r,earAz,earEl,reg_eps);
 
 elseif strcmpi(mode,'BiMagLSold') % old smoothing, kept to reproduce old data
     if fc>=fs/2
@@ -305,7 +300,7 @@ elseif strcmpi(mode,'SpSubMod') % FDTA + SpSub
     if fc>=fs/2
         warning('fc (%0.2f Hz) >= fs/2 (%0.2f Hz). SpSubMod preprocessing is the same as SpSub...',fc,fs/2)
     end
-    [Hnm,varOut.fc] = toSH_SpSubMod(H,N,az,el,fs,w,fc,r,earAz,earEl,Nmax);
+    [Hnm,varOut.fc] = toSH_SpSubMod(H,N,az,el,fs,w,fc,r,earAz,earEl,Nmax,reg_eps);
 
 else
     error('Unknown method %s. Use one of these: ''Trunc'', ''SpSub'', ''FDTA'', ''MagLS'', ''TA'', ''BiMagLS'', ''SpSubMod''',mode)
@@ -364,7 +359,7 @@ if EQ > 0
     
     if EQ==1 || EQ==2 % these modes require a high-order reference
         if isempty(Hnm_ref)
-            Y = AKsh(Nmax,[],az*180/pi,el*180/pi,'real').';
+            Y = getRealSHmatrix(Nmax,az,el);
             if contains(mode,'ear') % time-align reference if required
                 kr = 2*pi*f*r/c;
                 p = earAlign(kr,az,el,earAz,earEl);

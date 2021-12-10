@@ -11,7 +11,7 @@ function [h,fs,az,el,r] = sofa2hrtf(SOFA_obj)
 %   fs = sampling frequency in Hz
 %   az = azimuth in rad (dirs x 1)
 %   el = colatitude in rad (dirs x 1)
-%   r = head radius in m (def=0.085)
+%   r = head radius in m (def=0.0875)
 %
 % AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
@@ -33,6 +33,9 @@ fs = SOFA_obj.Data.SamplingRate;
 az = SOFA_obj.SourcePosition(:,1)*pi/180; % azimuth in rad
 el = pi/2-SOFA_obj.SourcePosition(:,2)*pi/180; % colatitude in rad
 r = 0.0875; % using this as default for now
+% For negative collatitudes, reverse them and add pi to the azimuth
+az(el<0) = mod(az(el<0)+pi,2*pi);
+el(el<0) = -el(el<0);
 
 %% Rearrange IR dimensions
 dimIn = SOFA_obj.API.Dimensions.Data.IR; % dimensions, e.g. 'MRN'

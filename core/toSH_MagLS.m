@@ -1,4 +1,4 @@
-function [Hnm,fc] = toSH_MagLS(H,N,az,el,fs,w,fc,k,r)
+function [Hnm,fc] = toSH_MagLS(H,N,az,el,fs,w,fc,k,r,reg_eps)
 % Transform HRTF to SH domain at order N with the MagLS method [1],
 % following the simplified approach from [2] sec. 4.11.2 and 4.11.3. The
 % main difference of this implementation vs [1] is that the phase is
@@ -56,13 +56,8 @@ nfreqs = size(H,1);
 f = linspace(0,fs/2,nfreqs).'; % frequency vector
 
 %% Get the SH matrices
-Y = AKsh(N, [], az*180/pi, el*180/pi, 'real').'; 
-if exist('w','var') && ~isempty(w)
-%     Y_inv = 4*pi*w.*Y'; % if integrations weights are provided, use them
-    Y_inv = mult2(4*pi*w,Y'); % use integrations weights if provided
-else
-    Y_inv = pinv(Y); % if not, the pseudoinverse will do just fine
-end
+Y = getRealSHmatrix(N,az,el);
+Y_inv = getYinv(N,az,el,w,reg_eps);
 
 %% Apply simplified MagLS from [2] sec.4.11.2
 

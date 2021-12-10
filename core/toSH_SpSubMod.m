@@ -1,4 +1,4 @@
-function [Hnm,fc] = toSH_SpSubMod(H,N,az,el,fs,w,fc,r,earAz,earEl,Nmax)
+function [Hnm,fc] = toSH_SpSubMod(H,N,az,el,fs,w,fc,r,earAz,earEl,Nmax,reg_eps)
 % Combination of spatial subsampling [1] and frequency-dependent time 
 % alignment [2], as suggested in [3].
 %
@@ -71,4 +71,4 @@ ind = fc_ind:nfreqs;
 H(ind,:,:) = H(ind,:,:).*exp(-1i*p(ind,:,:)); % apply correction
 
 %% Then, apply spatial subsampling
-Hnm = toSH_SpSub(H,N,az,el,w,Nmax);
+Hnm = toSH_SpSub(H,N,az,el,w,Nmax,reg_eps);

@@ -111,14 +111,6 @@ for fi=1:nfreqs
 end
 fprintf('\n')
 
-% Hnm_match2(:,:,1) = Hnm(:,:,1).*G1(:,1) + Hnm(:,:,2).*G2(:,1);
-% Hnm_match2(:,:,2) = Hnm(:,:,2).*G1(:,2) + Hnm(:,:,1).*G2(:,2);
-% 
-% Hnm_match3 = Hnm.*permute(G1,[1,3,2]);
-% Hnm_match3(:,:,1) = Hnm_match3(:,:,1) + Hnm(:,:,2).*G2(:,1);
-% Hnm_match3(:,:,2) = Hnm_match3(:,:,2) + Hnm(:,:,1).*G2(:,2);
-
-
 Hnm = Hnm_match;
 
 %% Plots

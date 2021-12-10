@@ -1,4 +1,4 @@
-function EQ = autoreg_minphase(H,T,fs,maxAmp,frac,flims)
+function [EQmp, EQ] = autoreg_minphase(H,T,fs,maxAmp,frac,flims)
 % Regularized inverse of an impulse response [REFERENCE PENDING].
 %
 % IMPORTANT: this function does not deal with phase and the output is
@@ -17,7 +17,8 @@ function EQ = autoreg_minphase(H,T,fs,maxAmp,frac,flims)
 %   flims = inversion limits in Hz (def=[100 18000])
 %
 % OUTPUT:
-%   EQ = minimum phase EQ filter (nfreqs x nchannels)
+%   EQmp = minimum phase EQ filter (nfreqs x nchannels)
+%   EQ = linear phase EQ filter (nfrqes x nchannels)
 %
 % REFERENCES:
 %   TODO
@@ -37,19 +38,20 @@ if ~exist('flims','var')
 end
 
 %% Calculate the inverse filter
-H = abs(H); % disregard phase
-T = abs(T); % disregard phase
 X = H./T; % this is what we want to invert
+Xmag = abs(X);
 nfreqs = size(H,1);
 f = linspace(0,fs/2,nfreqs).';
 
 alpha = 1/(2*db2mag(maxAmp))^2;
 
-Xhat = AKfractOctSmooth(X,'amp',fs,frac,false);
+Xhat = AKfractOctSmooth(Xmag,'amp',fs,frac,false);
 sigma = zeros(nfreqs,1);
-sigma(Xhat>=X) = Xhat(Xhat>=X)-X(Xhat>=X);
+sigma(Xhat>=Xmag) = Xhat(Xhat>=Xmag)-Xmag(Xhat>=Xmag);
 
-EQ = X ./ ( X.^2 + alpha + sigma.^2 );
+EQ = conj(X) ./ ( abs(X).^2 + alpha + sigma.^2 );
+EQmag = abs(EQ);
+EQph = angle(EQ);
 
 %% Fade in/out to 1 outside the inversion limits
 % Low-frequency boundary
@@ -65,7 +67,7 @@ if ~isempty(fc1) && ~isempty(fc2) && (fc2-fc1)>0
     fcvec = f(fc1_ind:fc2_ind); % f vector (lin scale)
     w = interp1(fcvec_log,w_log,fcvec,'spline'); % weights (lin scale)
     w = [zeros(fc1_ind-1,1);w(:);ones(nfreqs-fc2_ind,1)]; % for all freqs
-    EQ = (1-w)*1 + w.*EQ; % weighted sum
+    EQmag = (1-w)*1 + w.*EQmag; % weighted sum
 end
 
 % High-frequency boundary
@@ -81,10 +83,11 @@ if ~isempty(fc1) && ~isempty(fc2) && (fc2-fc1)>0
     fcvec = f(fc1_ind:fc2_ind); % f vector (lin scale)
     w = interp1(fcvec_log,w_log,fcvec,'spline'); % weights (lin scale)
     w = [ones(fc1_ind-1,1);w(:);zeros(nfreqs-fc2_ind,1)]; % for all freqs
-    EQ = (1-w)*1 + w.*EQ; % weighted sum
+    EQmag = (1-w)*1 + w.*EQmag; % weighted sum
 end
+EQ = EQmag.*exp(1i*EQph); % preserve original phase
 
 %% Make minimum phase
-EQ = makeMinPhase(EQ);
+EQmp = makeMinPhase(abs(EQ));
 
 end

@@ -1,4 +1,4 @@
-function Hnm = toSH_SpSub(H,N,az,el,w,Nmax)
+function Hnm = toSH_SpSub(H,N,az,el,w,Nmax,reg_eps)
 % Transform HRTF to SH domain at order N using spatial subsampling [1].
 % This is equivalent to virtual loudspeaker decoding (first introduced by 
 % [2]) with "mode-matching" (pseudoinverse-based).
@@ -35,13 +35,7 @@ end
 
 %% Process
 % First, get the SH-HRTF with highest available order
-Ymax = AKsh(Nmax, [], az*180/pi, el*180/pi, 'real').'; % SH coeffs
-if exist('w','var') && ~isempty(w)
-%     Ymax_inv = 4*pi*w.*Ymax'; % if integrations weights are provided, use them
-    Ymax_inv = mult2(4*pi*w,Ymax'); % use integrations weights if provided
-else
-    Ymax_inv = pinv(Ymax); % if not, the pseudoinverse will do just fine
-end
+Ymax_inv = getYinv(Nmax,az,el,w,reg_eps);
 Hnm_max = mult3(H,Ymax_inv);
 
 % Then, resample to an appropriately sized sparse grid (Gauss)
@@ -50,8 +44,7 @@ Ymax_s = AKsh(Nmax, [], sgrid(:,1)*180/pi, sgrid(:,2)*180/pi, 'real').';
 Hs = mult3(Hnm_max,Ymax_s); % = cat(3,Hnm_max(:,:,1)*Ymax_s,Hnm_max(:,:,2)*Ymax_s);
 
 % Finally, convert to SH again at the target low order
-Ys = AKsh(N, [], sgrid(:,1)*180/pi, sgrid(:,2)*180/pi, 'real').';
-% Ys_inv = 4*pi*diag(sgrid(:,3))*Ys'; 
-Ys_inv = mult2(4*pi*sgrid(:,3),Ys');
+Ys_inv = getYinv(N,sgrid(:,1),sgrid(:,2));
 Hnm = mult3(Hs,Ys_inv);
+
  
