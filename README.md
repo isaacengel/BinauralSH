@@ -16,5 +16,5 @@ Engel, Isaac, Goodman, Dan. F. M., and Picinali, Lorenzo, "Assessing HRTF prepro
 
 [2] Engel, Isaac, Goodman, Dan. F. M., and Picinali, Lorenzo (2022), "Assessing HRTF preprocessing methods for Ambisonics rendering through perceptual models". Acta Acustica (pending publication). DOI: 10.1051/aacus/2021055
 
-[![DOI](https://zenodo.org/badge/341323307.svg)](https://zenodo.org/badge/latestdoi/341323307)
+[![DOI](https://zenodo.org/badge/341323307.svg)](https://doi.org/10.5281/zenodo.4633933)
 
