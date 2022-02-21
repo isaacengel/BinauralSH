@@ -20,6 +20,7 @@ if ~exist('r','var')
     r = 0.085;
 end
 
+SOFA_obj = SOFAgetConventions('SimpleFreeFieldHRIR');
 SOFA_obj.Data.IR = permute(h,[2,3,1]); % dirs x ears x time
 SOFA_obj.Data.SamplingRate = fs;
 SOFA_obj.Data.SamplingRate_Units = 'hertz';
@@ -35,14 +36,12 @@ SOFA_obj.ListenerView_Units = 'metre';
 SOFA_obj.ReceiverPosition = [0 r 0; 0 -r 0];
 SOFA_obj.ReceiverPosition_Type = 'cartesian';
 SOFA_obj.ReceiverPosition_Units = 'metre';
-SOFA_obj.EmitterPosition = [0,0,0]; % not used; this is the default value
-SOFA_obj.EmitterPosition_Type = 'cartesian';
-SOFA_obj.EmitterPosition_Units = 'metre';
+% SOFA_obj.EmitterPosition = [0,0,0]; % not used; this is the default value
+% SOFA_obj.EmitterPosition_Type = 'cartesian';
+% SOFA_obj.EmitterPosition_Units = 'metre';
 SOFA_obj.API.M = size(SOFA_obj.Data.IR,1);
 SOFA_obj.API.R = size(SOFA_obj.Data.IR,2);
 SOFA_obj.API.N = size(SOFA_obj.Data.IR,3);
 SOFA_obj.API.Dimensions.Data.IR = 'MRN'; % time-measurements-receivers
-SOFA_obj.GLOBAL_SOFAConventions = 'SimpleFreeFieldHRIR';
-SOFA_obj.GLOBAL_RoomType = 'free field';
 SOFA_obj.GLOBAL_Comment = 'Generated with ''hrtf2sofa()'' from an HRIR';
 SOFA_obj.GLOBAL_Title = 'HRTF';
