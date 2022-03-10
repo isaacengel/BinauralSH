@@ -1,4 +1,4 @@
-function SOFA_obj = hrtf2sofa(h,fs,az,el,r)
+function SOFA_obj = hrtf2sofa(h,fs,az,el,r,delay)
 % Take HRIR data matrix and other paramters and make a SOFA object. Assume
 % "normal" conditions (free field, listener at the origin looking at the
 % front, etc).
@@ -9,6 +9,7 @@ function SOFA_obj = hrtf2sofa(h,fs,az,el,r)
 %   az = azimuth in rad (dirs x 1)
 %   el = colatitude in rad (dirs x 1)
 %   r = head radius in m (def=0.085)
+%   delay = removed onset delay if relevant (def=[])
 %
 % OUTPUT:
 %   SOFA_obj = SOFA object, e.g. obtained from SOFAload()
@@ -19,9 +20,13 @@ function SOFA_obj = hrtf2sofa(h,fs,az,el,r)
 if ~exist('r','var')
     r = 0.085;
 end
+if ~exist('delay','var')
+    delay = [];
+end
 
 SOFA_obj = SOFAgetConventions('SimpleFreeFieldHRIR');
 SOFA_obj.Data.IR = permute(h,[2,3,1]); % dirs x ears x time
+SOFA_obj.Data.Delay = delay;
 SOFA_obj.Data.SamplingRate = fs;
 SOFA_obj.Data.SamplingRate_Units = 'hertz';
 SOFA_obj.SourcePosition = [az(:)*180/pi,90-el(:)*180/pi,ones(size(az(:)))]; % HRTF directions

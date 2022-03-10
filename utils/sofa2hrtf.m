@@ -1,4 +1,4 @@
-function [h,fs,az,el,r] = sofa2hrtf(SOFA_obj)
+function [h,fs,az,el,r,delay] = sofa2hrtf(SOFA_obj)
 % Return HRIR data matrix and other paramters from a SOFA object. Assume
 % "normal" conditions (free field, listener at the origin looking at the
 % front, etc).
@@ -36,6 +36,12 @@ r = 0.0875; % using this as default for now
 % For negative collatitudes, reverse them and add pi to the azimuth
 az(el<0) = mod(az(el<0)+pi,2*pi);
 el(el<0) = -el(el<0);
+% Output delay if it exists
+if isfield(SOFA_obj.Data,'Delay')
+    delay = SOFA_obj.Data.Delay;
+else
+    delay = [];
+end
 
 %% Rearrange IR dimensions
 dimIn = SOFA_obj.API.Dimensions.Data.IR; % dimensions, e.g. 'MRN'
