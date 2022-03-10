@@ -1,5 +1,5 @@
 function [EQmp, EQ] = autoreg_minphase(H,T,fs,maxAmp,frac,flims)
-% Regularized inverse of an impulse response [REFERENCE PENDING].
+% Regularized inverse of an impulse response [1].
 %
 % IMPORTANT: this function does not deal with phase and the output is
 % always a minimum phase filter.
@@ -21,7 +21,8 @@ function [EQmp, EQ] = autoreg_minphase(H,T,fs,maxAmp,frac,flims)
 %   EQ = linear phase EQ filter (nfrqes x nchannels)
 %
 % REFERENCES:
-%   TODO
+%   [1] Engel et al., "On the Differences in Preferred Headphone Response
+%       for Spatial and Stereo Content", JAES (accepted in February 2022).
 %
 % AUTHOR: Isaac Engel - isaac.engel(at)imperial.ac.uk
 % February 2021
